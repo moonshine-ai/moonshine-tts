@@ -37,14 +37,40 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     REQUIRED
   )
 elseif(APPLE)
-  find_library(
-    MOONSHINE_TTS_ORT_LIB
-    NAMES onnxruntime
-    PATHS "${ONNXRUNTIME_ROOT}/lib/macos/arm64" "${ONNXRUNTIME_ROOT}/lib/macos/x86_64"
-          "${ONNXRUNTIME_ROOT}/lib"
-    NO_DEFAULT_PATH
-    REQUIRED
+  # Common layouts: lib/macos/{arm64,x86_64}/ (moonshine-style), flat lib/{arm64,x86_64}/,
+  # or ONNX release tarball layout under lib/ only. Prefer a shared lib: find_library(NAMES
+  # onnxruntime) also matches libonnxruntime.a; if both .a and versioned .dylib exist, we must
+  # pick the dylib or linking pulls huge static/CoreML deps.
+  set(_moonshine_tts_ort_mac_lib_dirs
+    "${ONNXRUNTIME_ROOT}/lib/macos/arm64"
+    "${ONNXRUNTIME_ROOT}/lib/macos/x86_64"
+    "${ONNXRUNTIME_ROOT}/lib/arm64"
+    "${ONNXRUNTIME_ROOT}/lib/x86_64"
+    "${ONNXRUNTIME_ROOT}/lib"
   )
+  foreach(_d IN LISTS _moonshine_tts_ort_mac_lib_dirs)
+    if(IS_DIRECTORY "${_d}")
+      file(GLOB _moonshine_tts_ort_dylibs LIST_DIRECTORIES false "${_d}/libonnxruntime*.dylib")
+      if(_moonshine_tts_ort_dylibs)
+        list(GET _moonshine_tts_ort_dylibs 0 MOONSHINE_TTS_ORT_LIB)
+        break()
+      endif()
+    endif()
+  endforeach()
+  if(NOT MOONSHINE_TTS_ORT_LIB)
+    find_library(
+      MOONSHINE_TTS_ORT_LIB
+      NAMES onnxruntime
+      PATHS ${_moonshine_tts_ort_mac_lib_dirs}
+      NO_DEFAULT_PATH
+    )
+  endif()
+  if(NOT MOONSHINE_TTS_ORT_LIB)
+    message(FATAL_ERROR
+      "Could not find ONNX Runtime (libonnxruntime.dylib or libonnxruntime.*.dylib) under "
+      "${ONNXRUNTIME_ROOT}/lib. Set -DONNXRUNTIME_ROOT=... or add a prebuilt under lib/. "
+      "See third-party/onnxruntime/README.md.")
+  endif()
 else()
   find_library(
     MOONSHINE_TTS_ORT_LIB
