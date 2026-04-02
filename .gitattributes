@@ -6,5 +6,3 @@
 # Exception: C++ project listfile (last matching pattern wins for gitattributes).
 cpp/CMakeLists.txt -filter -diff -merge text
 CMakeLists.txt -filter -diff -merge text
-CMakeLists.txt !text -filter -merge -diff
-cpp/CMakeLists.txt !text -filter -merge -diff
