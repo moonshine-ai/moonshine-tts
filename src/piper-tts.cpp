@@ -24,7 +24,8 @@ extern "C" {
 namespace moonshine_g2p {
 
 std::filesystem::path builtin_piper_voices_dir(std::string_view data_subdir) {
-  return std::filesystem::path(__FILE__).parent_path() / "data" / data_subdir / "piper-voices";
+  return std::filesystem::path(__FILE__).parent_path().parent_path() / "data" /
+         data_subdir / "piper-voices";
 }
 
 namespace {

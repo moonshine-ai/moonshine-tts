@@ -13,7 +13,7 @@
 
 namespace moonshine_g2p {
 
-/// Default Kokoro bundle: ``cpp/data/kokoro`` next to ``moonshine-tts.cpp`` (``config.json``, ``model.onnx``, ``voices/``).
+/// Default Kokoro bundle: ``data/kokoro`` at the repository root (``config.json``, ``model.onnx``, ``voices/``).
 std::filesystem::path builtin_kokoro_bundle_dir();
 
 /// Options for ``MoonshineTTS`` (Kokoro ONNX bundle + Moonshine G2P).

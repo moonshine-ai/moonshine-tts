@@ -26,7 +26,8 @@ extern "C" {
 namespace moonshine_g2p {
 
 std::filesystem::path builtin_kokoro_bundle_dir() {
-  return std::filesystem::path(__FILE__).parent_path() / "data" / "kokoro";
+  return std::filesystem::path(__FILE__).parent_path().parent_path() / "data" /
+         "kokoro";
 }
 
 namespace {
