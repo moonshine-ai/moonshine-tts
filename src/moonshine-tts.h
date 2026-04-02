@@ -54,10 +54,6 @@ class MoonshineTTS {
   MoonshineTTS& operator=(MoonshineTTS&&) noexcept;
   ~MoonshineTTS();
 
-  void set_voice(std::string_view voice_id);
-  void set_speed(double speed);
-  void set_lang(std::string_view lang_cli);
-
   static constexpr int kSampleRateHz = 24000;
 
   /// Text → IPA (MoonshineG2P) → Kokoro phoneme string → ONNX → mono float waveform.

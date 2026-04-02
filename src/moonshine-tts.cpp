@@ -209,14 +209,39 @@ bool voice_prefix_ok(char kokoro_lang, std::string_view voice) {
   return false;
 }
 
+/// If ``--lang`` is US English but the user asked for a British Kokoro voice id (``bf_*`` / ``bm_*``), or the
+/// reverse, switch the Kokoro profile so ``voice_prefix_ok`` and IPA normalization match the voice pack.
+void maybe_align_en_profile_for_kokoro_voice(std::string_view voice, LangProfile& profile,
+                                             std::string& g2p_dialect) {
+  if (voice.size() < 3) {
+    return;
+  }
+  const std::string_view p3 = voice.substr(0, 3);
+  if (profile.kokoro_lang == 'a' && (p3 == "bf_" || p3 == "bm_")) {
+    if (const LangProfile* gb = lookup_lang_profile("en_gb")) {
+      profile = *gb;
+      g2p_dialect = gb->g2p_dialect;
+    }
+  } else if (profile.kokoro_lang == 'b' && (p3 == "af_" || p3 == "am_")) {
+    if (const LangProfile* us = lookup_lang_profile("en_us")) {
+      profile = *us;
+      g2p_dialect = us->g2p_dialect;
+    }
+  }
+}
+
 std::string select_voice_id(char kokoro_lang, std::string_view requested, std::string_view default_voice,
                             const std::filesystem::path& voices_dir) {
+  const auto voice_path = [&](const std::string& id) { return voices_dir / (id + ".kokorovoice"); };
   std::string v = requested.empty() ? std::string(default_voice) : std::string(requested);
+  if (!requested.empty() && std::filesystem::is_regular_file(voice_path(v)) &&
+      voice_prefix_ok(kokoro_lang, v)) {
+    return v;
+  }
   if (!voice_prefix_ok(kokoro_lang, v)) {
     v = std::string(default_voice);
   }
-  const auto f = voices_dir / (v + ".kokorovoice");
-  if (!std::filesystem::is_regular_file(f)) {
+  if (!std::filesystem::is_regular_file(voice_path(v))) {
     v = std::string(default_voice);
   }
   return v;
@@ -440,7 +465,11 @@ struct MoonshineTTS::Impl {
     speed_elem_type_ = static_cast<ONNXTensorElementDataType>(tinfo.GetElementType());
   }
 
-  explicit Impl(MoonshineTTSOptions opt) : speed_(opt.speed) {
+  explicit Impl(MoonshineTTSOptions opt) {
+    if (!(opt.speed > 0.0) || !std::isfinite(opt.speed)) {
+      throw std::runtime_error("MoonshineTTS: speed must be a positive finite number");
+    }
+    speed_ = opt.speed;
     g2p_opt_ = std::move(opt.g2p_options);
     if (opt.use_bundled_cpp_g2p_data) {
       g2p_opt_.model_root = builtin_cpp_data_root();
@@ -491,9 +520,10 @@ struct MoonshineTTS::Impl {
     detect_speed_input_element_type();
     const std::string lk = normalize_lang_key(opt.lang);
     resolve_lang_for_tts(lk, g2p_opt_, profile_, g2p_dialect_);
+    const std::filesystem::path voices_dir = kokoro_dir_ / "voices";
+    maybe_align_en_profile_for_kokoro_voice(opt.voice, profile_, g2p_dialect_);
     kokoro_lang_ = profile_.kokoro_lang;
     g2p_ = std::make_unique<MoonshineG2P>(g2p_dialect_, g2p_opt_);
-    const std::filesystem::path voices_dir = kokoro_dir_ / "voices";
     voice_id_ = select_voice_id(kokoro_lang_, opt.voice, profile_.default_voice, voices_dir);
     reload_voice_tensor();
   }
@@ -517,29 +547,6 @@ struct MoonshineTTS::Impl {
       throw std::runtime_error(msg.str());
     }
     read_kokorovoice(path, voice_, voice_rows_, voice_cols_);
-  }
-
-  void set_voice(std::string_view voice_id) {
-    const std::filesystem::path voices_dir = kokoro_dir_ / "voices";
-    voice_id_ = select_voice_id(kokoro_lang_, voice_id, profile_.default_voice, voices_dir);
-    reload_voice_tensor();
-  }
-
-  void set_speed(double s) {
-    if (!(s > 0.0) || !std::isfinite(s)) {
-      throw std::runtime_error("MoonshineTTS: speed must be a positive finite number");
-    }
-    speed_ = s;
-  }
-
-  void set_lang(std::string_view lang_cli) {
-    const std::string lk = normalize_lang_key(lang_cli);
-    resolve_lang_for_tts(lk, g2p_opt_, profile_, g2p_dialect_);
-    kokoro_lang_ = profile_.kokoro_lang;
-    g2p_ = std::make_unique<MoonshineG2P>(g2p_dialect_, g2p_opt_);
-    const std::filesystem::path voices_dir = kokoro_dir_ / "voices";
-    voice_id_ = select_voice_id(kokoro_lang_, voice_id_, profile_.default_voice, voices_dir);
-    reload_voice_tensor();
   }
 
   std::vector<float> synthesize(std::string_view text) {
@@ -624,12 +631,6 @@ MoonshineTTS::~MoonshineTTS() = default;
 
 MoonshineTTS::MoonshineTTS(MoonshineTTS&&) noexcept = default;
 MoonshineTTS& MoonshineTTS::operator=(MoonshineTTS&&) noexcept = default;
-
-void MoonshineTTS::set_voice(std::string_view voice_id) { impl_->set_voice(voice_id); }
-
-void MoonshineTTS::set_speed(double speed) { impl_->set_speed(speed); }
-
-void MoonshineTTS::set_lang(std::string_view lang_cli) { impl_->set_lang(lang_cli); }
 
 std::vector<float> MoonshineTTS::synthesize(std::string_view text) { return impl_->synthesize(text); }
 
