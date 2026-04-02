@@ -1,6 +1,6 @@
 # C++ runtime data (per-language bundles)
 
-This tree mirrors assets the C++ `moonshine_g2p` stack expects under a single **`--model-root`** (see each `README.md` for paths). Files are normally maintained under the repository root `data/` and `models/`; `cpp/data/` is a curated copy for self-contained C++ builds.
+This tree mirrors assets the C++ `moonshine_g2p` stack expects under a single **`--model-root`** (see each `README.md` for paths). When this project is embedded as the `moonshine-tts` submodule, canonical Python assets usually live under the **parent** repo’s `data/` and `models/`; this directory is the curated copy shipped for self-contained C++ builds.
 
 | Folder | Role |
 |--------|------|
@@ -24,11 +24,11 @@ All commands below assume the **repository root** as the current working directo
 
 ## Regeneration verification (2026-03-30)
 
-Commands below were run from a clean temp output directory and compared to `data/` / `models/` / `cpp/data/` unless noted.
+Commands below were run from a clean temp output directory and compared to the parent monorepo’s `data/` / `models/` and this `moonshine-tts/data/` tree unless noted.
 
 | Recipe | Byte-identical to tree? | Notes |
 |--------|-------------------------|--------|
-| `download_multilingual_ipa_lexicons.py` for `de`, `fr`, `it`, `ja`, `ko`, `nl`, `pt_br`, `pt_pt`, `ru`, `vi`, `zh_hans` | **Yes** | All eleven `dict.tsv` files matched `data/<lang>/dict.tsv` and `cpp/data/<lang>/dict.tsv`. |
+| `download_multilingual_ipa_lexicons.py` for `de`, `fr`, `it`, `ja`, `ko`, `nl`, `pt_br`, `pt_pt`, `ru`, `vi`, `zh_hans` | **Yes** | All eleven `dict.tsv` files matched the parent repo’s `data/<lang>/dict.tsv` and this tree’s `data/<lang>/dict.tsv`. |
 | `download_cmudict_to_tsv.py` → `data/en_us/dict.tsv` | **Yes** | Restored after run; output matched prior file. |
 | `export_models_to_onnx.py` (heteronym + OOV) | **Yes** (after bugfix) | `model.onnx` and `onnx-config.json` match `models/en_us/{heteronym,oov}/` when re-exported from the same checkpoints. A script bug that wrote `onnx_export.onnx_path` as `onnx-config.json` was fixed in `scripts/export_models_to_onnx.py` (must pass the `model.onnx` path into `_build_config_onnx`, not the JSON path). Copy `g2p-config.json` into the temp `model_root` if you rely on `--only config` defaults. |
 | `export_arabic_msa_diacritizer_onnx.py` | **No (failed)** | With `torch` 2.10 + current `transformers`, export raises `ValueError` on `attention_mask` shape inside BERT. The checked-in Arabic ONNX was produced with an older stack; see [ar_msa/README.md](ar_msa/README.md). |

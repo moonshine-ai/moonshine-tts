@@ -16,4 +16,4 @@
 python scripts/download_multilingual_ipa_lexicons.py --only vi
 ```
 
-Writes `data/vi/dict.tsv` and `data/vi/source.txt`. Copy `dict.tsv` into `cpp/data/vi/` if needed.
+Writes `data/vi/dict.tsv` and `data/vi/source.txt`. Copy `dict.tsv` into `data/vi/` if needed.

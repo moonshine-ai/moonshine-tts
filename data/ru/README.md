@@ -16,4 +16,4 @@
 python scripts/download_multilingual_ipa_lexicons.py --only ru
 ```
 
-Writes `data/ru/dict.tsv` and `data/ru/source.txt`. Copy `dict.tsv` into `cpp/data/ru/` if needed.
+Writes `data/ru/dict.tsv` and `data/ru/source.txt`. Copy `dict.tsv` into `data/ru/` if needed.

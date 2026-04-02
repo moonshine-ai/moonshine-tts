@@ -16,4 +16,4 @@
 python scripts/download_multilingual_ipa_lexicons.py --only nl
 ```
 
-Writes `data/nl/dict.tsv` and `data/nl/source.txt`. Copy `dict.tsv` into `cpp/data/nl/` if needed.
+Writes `data/nl/dict.tsv` and `data/nl/source.txt`. Copy `dict.tsv` into `data/nl/` if needed.

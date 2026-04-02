@@ -16,7 +16,7 @@ The file `ko_KR-melotts-medium.onnx` is **not** the MeloTTS model: it is a **Pip
 
 ### Re-export ONNX from a MeloTTS training checkpoint
 
-Use `training/piper_korean/export_melotts_checkpoint_to_cpp.sh` (writes `cpp/data/ko/piper-voices/ko_KR-melotts-medium.onnx` + JSON and refreshes `data/ko/piper-voices` symlinks).
+Use `training/piper_korean/export_melotts_checkpoint_to_cpp.sh` (writes `data/ko/piper-voices/ko_KR-melotts-medium.onnx` + JSON and refreshes `data/ko/piper-voices` symlinks).
 
 ### Optional: int8 weight packing (`onnx-shrink-ray`)
 
@@ -24,7 +24,8 @@ After export (or to re-pack an FP32 checkout):
 
 ```bash
 pip install onnx onnx-shrink-ray onnx-graphsurgeon
-python scripts/shrink_piper_voice_onnx_weights.py --root cpp/data --name-contains melotts
+# From the parent monorepo root (this tree is the `moonshine-tts` submodule):
+python scripts/shrink_piper_voice_onnx_weights.py --root moonshine-tts/data --name-contains melotts
 ```
 
 ## Provenance
@@ -41,7 +42,7 @@ python scripts/shrink_piper_voice_onnx_weights.py --root cpp/data --name-contain
 python scripts/download_multilingual_ipa_lexicons.py --only ko
 ```
 
-Writes `data/ko/dict.tsv` and `data/ko/source.txt`. Copy `dict.tsv` into `cpp/data/ko/` if you maintain this tree separately.
+Writes `data/ko/dict.tsv` and `data/ko/source.txt`. Copy `dict.tsv` into `data/ko/` if you maintain this tree separately.
 
 ### Optional: Korean morph ONNX (for `KoreanTokPosOnnx` / tests only)
 

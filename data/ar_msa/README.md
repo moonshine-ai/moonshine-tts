@@ -42,4 +42,4 @@
      --out data/ar_msa/dict.tsv
    ```
 
-3. Copy or symlink into `cpp/data/ar_msa/` if you maintain this tree separately.
+3. Copy or symlink into `data/ar_msa/` if you maintain this tree separately.

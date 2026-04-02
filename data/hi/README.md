@@ -10,7 +10,7 @@ No other data files are required for Hindi in C++ (digit expansion and rules are
 
 | Field | Detail |
 |--------|--------|
-| **Primary copy** | Repository root `data/hi/dict.tsv` (canonical). This tree mirrors it for layouts where `model_root` resolves under `cpp/` (see below). |
+| **Primary copy** | Repository root `data/hi/dict.tsv` (canonical, in the parent monorepo when embedded). This tree mirrors it for layouts where `model_root` points at this checkout's `data/` directory. |
 | **IPA source** | English Wiktionary, parsed HTML (`== Hindi ==` section, phonemic `/…/` in IPA spans). **License:** [CC BY-SA](https://en.wiktionary.org/wiki/Wiktionary:Copyrights). |
 | **Word ranking** | [hermitdave/FrequencyWords](https://github.com/hermitdave/FrequencyWords) Hindi list (`content/2018/hi/hi_full.txt`, OpenSubtitles-derived). **License:** CC BY-SA 4.0. |
 | **Build script** | `scripts/build_hi_lexicon_from_wiktionary.py` |
@@ -21,7 +21,7 @@ Comment headers inside `dict.tsv` repeat the URLs and licenses for the merged Wi
 
 - **`MoonshineG2P` / factory:** `resolve_hindi_dict_path(model_root)` checks, in order:  
   `model_root/../data/hi/dict.tsv`, `model_root/../../data/hi/dict.tsv`, then `model_root/hi/dict.tsv`.
-- **`hindi_text_to_ipa` / doctest parity:** `builtin_hindi_dict_path()` prefers repo `data/hi/dict.tsv`, else `cpp/data/hi/dict.tsv` (paths derived from `hindi.cpp`).
+- **`hindi_text_to_ipa` / doctest parity:** `builtin_hindi_dict_path()` prefers repo `data/hi/dict.tsv`, else `data/hi/dict.tsv` (paths derived from `hindi.cpp`).
 - **`hindi_rule_g2p` standalone tool:** same default as `builtin_hindi_dict_path()`; override with `--dict PATH`.
 
 ## Recreating / refreshing
@@ -36,7 +36,7 @@ python scripts/build_hi_lexicon_from_wiktionary.py --freq-url DEFAULT --limit 10
 Then refresh the C++ mirror:
 
 ```bash
-cp data/hi/dict.tsv cpp/data/hi/dict.tsv
+cp data/hi/dict.tsv data/hi/dict.tsv
 ```
 
 Category-wide crawl (no frequency list) remains:

@@ -20,6 +20,6 @@ From the repository root:
 python scripts/download_multilingual_ipa_lexicons.py --only de
 ```
 
-This writes `data/de/dict.tsv` and `data/de/source.txt`. Copy `dict.tsv` into `cpp/data/de/` if you keep a separate C++ data tree.
+This writes `data/de/dict.tsv` and `data/de/source.txt`. Copy `dict.tsv` into `data/de/` if you keep a separate C++ data tree.
 
 Optional: inspect `data/de/source.txt` for the exact upstream URL recorded at download time.

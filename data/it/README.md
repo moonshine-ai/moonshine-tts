@@ -18,4 +18,4 @@
 python scripts/download_multilingual_ipa_lexicons.py --only it
 ```
 
-Writes `data/it/dict.tsv` and `data/it/source.txt`. Copy `dict.tsv` into `cpp/data/it/` if needed.
+Writes `data/it/dict.tsv` and `data/it/source.txt`. Copy `dict.tsv` into `data/it/` if needed.

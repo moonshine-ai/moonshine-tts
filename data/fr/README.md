@@ -26,8 +26,8 @@ Produces `data/fr/dict.tsv` and `data/fr/source.txt`.
 
 There is no single `scripts/download_*.py` for the French CSV bundle. To recreate or extend:
 
-1. Each file must be UTF-8 CSV with a header line containing **`form`** (see `load_french_pos_dir` in `french_g2p.py` / `cpp/src/lang-specific/french.cpp`).
+1. Each file must be UTF-8 CSV with a header line containing **`form`** (see `load_french_pos_dir` in `french_g2p.py` / `src/lang-specific/french.cpp`).
 2. The filename stem (e.g. `noun` → category `NOUN`) is uppercased and used as the POS bucket key.
 3. Align new lists with the liaison logic documented in `french_g2p.py` (determiners, pronouns, *h aspiré* blocks, etc.).
 
-Copy updated files into `cpp/data/fr/` as needed.
+Copy updated files into `data/fr/` as needed.

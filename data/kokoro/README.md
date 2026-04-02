@@ -1,6 +1,6 @@
 # Kokoro — bundled TTS for `moonshine_tts`
 
-This directory is the **default Kokoro ONNX bundle** for the C++ CLI and `MoonshineTTS` (`builtin_kokoro_bundle_dir()` / `cpp/data/kokoro`). It must contain at least:
+This directory is the **default Kokoro ONNX bundle** for the C++ CLI and `MoonshineTTS` (`builtin_kokoro_bundle_dir()` / `data/kokoro`). It must contain at least:
 
 | Path | Role |
 |------|------|
@@ -8,7 +8,7 @@ This directory is the **default Kokoro ONNX bundle** for the C++ CLI and `Moonsh
 | `model.onnx` | Kokoro-82M acoustic ONNX (this repo often ships the **8-bit–quantized** build from [onnx-community/Kokoro-82M-ONNX](https://huggingface.co/onnx-community/Kokoro-82M-ONNX) `onnx/model_quantized.onnx`, patched for C++; or a **local FP32** export from `scripts/download_kokoro_onnx.py`). |
 | `voices/*.kokorovoice` | Style tensors for ONNX inference (C++ cannot load Hugging Face `voices/*.pt` pickles). |
 
-Optional in a **build tree** (not required under `cpp/data` if you only ship C++): `kokoro-v1_0.pth` (PyTorch weights, for re-exporting ONNX), `voices/*.pt` (source for `.kokorovoice`), `onnx_export_meta.json` (written by the download/export script).
+Optional in a **build tree** (not required under `data` if you only ship C++): `kokoro-v1_0.pth` (PyTorch weights, for re-exporting ONNX), `voices/*.pt` (source for `.kokorovoice`), `onnx_export_meta.json` (written by the download/export script).
 
 ## Provenance
 
@@ -16,26 +16,26 @@ Optional in a **build tree** (not required under `cpp/data` if you only ship C++
 |--------|--------|
 | **Weights, config, native voices (`voices/*.pt`)** | [hexgrad/Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) on Hugging Face (see upstream **VOICES.md** for voice IDs and locales). |
 | **`model.onnx`** | Either: **(A)** `scripts/fetch_hf_kokoro_quantized_onnx.py` — downloads [onnx-community/Kokoro-82M-ONNX](https://huggingface.co/onnx-community/Kokoro-82M-ONNX) `onnx/model_quantized.onnx` (~92 MiB) and renames input `style` → `ref_s` for `MoonshineTTS`; or **(B)** `scripts/download_kokoro_onnx.py` — local FP32 export via **`kokoro`** (`KModel`, `KModelForONNX`) with **`disable_complex=True`**. |
+| **`*.kokorovoice`** | Produced by `scripts/export_kokoro_voice_for_cpp.py` from each `voices/*.pt` tensor pack. Format: magic `KVO1`, little-endian `uint32` rows/cols, row-major `float32` data (after squeezing singleton dims to shape `[N, 256]`). |
 
 `MoonshineTTS` passes **`speed`** as float32 `[1]` or double scalar depending on the graph (detected at load time; ONNX Runtime requires `GetInputTypeInfo(i).GetONNXType() == ONNX_TYPE_TENSOR` before reading the element type).
+
+Python TTS in the parent monorepo (`speak.py`) can use the same HF bundle or PyTorch weights; the C++ path is **ONNX + `.kokorovoice` only**.
 
 ### Optional: onnx-shrink-ray weight packing
 
 The same **onnx-shrink-ray** `quantize_weights` path used for Arabic BERT (int8 weight storage + dequant,
 `float_quantization=False`) **does not preserve numeric parity** for Kokoro: `download_kokoro_onnx.py --verify`
-drops from correlation ~0.997 (FP32) to ~0.1 after shrink, so **the bundled `cpp/data/kokoro/model.onnx`
+drops from correlation ~0.997 (FP32) to ~0.1 after shrink, so **the bundled `data/kokoro/model.onnx`
 stays FP32**. For experiments you can run:
 
 ```bash
-python scripts/download_kokoro_onnx.py --out-dir cpp/data/kokoro --only-shrink
+python scripts/download_kokoro_onnx.py --out-dir data/kokoro --only-shrink
 # or after export:  --shrink-weights
 ```
 
 Expect a smaller file (~80 MiB vs ~310 MiB) but **validate audio** before shipping; ORT dynamic MatMul/Gemm
 quantization (`--experimental-int8`) is also known to break prosody (see script docstring).
-| **`*.kokorovoice`** | Produced by `scripts/export_kokoro_voice_for_cpp.py` from each `voices/*.pt` tensor pack. Format: magic `KVO1`, little-endian `uint32` rows/cols, row-major `float32` data (after squeezing singleton dims to shape `[N, 256]`). |
-
-Python TTS in this repo (`speak.py`) can use the same HF bundle or PyTorch weights; the C++ path is **ONNX + `.kokorovoice` only**.
 
 ## Dependencies (rebuild)
 
@@ -77,17 +77,17 @@ From the **repository root**:
    To write **directly** into this bundle (overwrites same paths):
 
    ```bash
-   python scripts/download_kokoro_onnx.py --out-dir cpp/data/kokoro --verify
+   python scripts/download_kokoro_onnx.py --out-dir data/kokoro --verify
    ```
 
    Use `--skip-kokorovoice-export` if you only want ONNX/config/`.pt` without regenerating `.kokorovoice`.
 
-2. **Install into `cpp/data/kokoro`** if you built under `models/kokoro`:
+2. **Install into `data/kokoro`** if you built under `models/kokoro`:
 
    ```bash
-   mkdir -p cpp/data/kokoro/voices
-   cp -a models/kokoro/config.json models/kokoro/model.onnx cpp/data/kokoro/
-   cp -a models/kokoro/voices/*.kokorovoice cpp/data/kokoro/voices/
+   mkdir -p data/kokoro/voices
+   cp -a models/kokoro/config.json models/kokoro/model.onnx data/kokoro/
+   cp -a models/kokoro/voices/*.kokorovoice data/kokoro/voices/
    ```
 
 ## Rebuild only `.kokorovoice` files
@@ -95,7 +95,7 @@ From the **repository root**:
 If you already have `voices/*.pt` (from HF or a previous download) but need to refresh C++ sidecars:
 
 ```bash
-python scripts/export_kokoro_voice_for_cpp.py --voices-dir cpp/data/kokoro/voices
+python scripts/export_kokoro_voice_for_cpp.py --voices-dir data/kokoro/voices
 # or
 python scripts/export_kokoro_voice_for_cpp.py --voices-dir models/kokoro/voices
 ```
@@ -105,7 +105,7 @@ Single file:
 ```bash
 python scripts/export_kokoro_voice_for_cpp.py \
   models/kokoro/voices/af_heart.pt \
-  cpp/data/kokoro/voices/af_heart.kokorovoice
+  data/kokoro/voices/af_heart.kokorovoice
 ```
 
 ## Rebuild only `model.onnx` (weights unchanged)
@@ -114,7 +114,7 @@ python scripts/export_kokoro_voice_for_cpp.py \
 python scripts/download_kokoro_onnx.py --out-dir models/kokoro --skip-download
 ```
 
-Then copy `model.onnx` (and updated `onnx_export_meta.json` if present) into `cpp/data/kokoro/` as needed.
+Then copy `model.onnx` (and updated `onnx_export_meta.json` if present) into `data/kokoro/` as needed.
 
 ## Sanity checks after a rebuild
 
@@ -128,11 +128,11 @@ Then copy `model.onnx` (and updated `onnx_export_meta.json` if present) into `cp
 
    Expect: `ok (510, 256)` (rows/cols may match upstream; second dimension is style size).
 
-2. **End-to-end TTS (needs built `moonshine_tts`, ONNX, voices, and `cpp/data` G2P assets):**
+2. **End-to-end TTS (needs built `moonshine_tts`, ONNX, voices, and `data` G2P assets):**
 
    ```bash
-   cmake --build cpp/build --target moonshine_tts
-   cpp/build/moonshine_tts --lang en_us -o /tmp/kokoro_smoke.wav --text "Hello"
+   cmake --build build --target moonshine_tts
+   build/moonshine_tts --lang en_us -o /tmp/kokoro_smoke.wav --text "Hello"
    ```
 
    Expect: success message with non-zero sample count at 24000 Hz.

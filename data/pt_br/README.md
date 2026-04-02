@@ -16,4 +16,4 @@
 python scripts/download_multilingual_ipa_lexicons.py --only pt_br
 ```
 
-Writes `data/pt_br/dict.tsv` and `data/pt_br/source.txt`. Copy `dict.tsv` into `cpp/data/pt_br/` if needed.
+Writes `data/pt_br/dict.tsv` and `data/pt_br/source.txt`. Copy `dict.tsv` into `data/pt_br/` if needed.

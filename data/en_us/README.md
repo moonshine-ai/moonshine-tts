@@ -47,6 +47,6 @@
      --oov-checkpoint models/en_us/oov/checkpoint.pt
    ```
 
-   Keep `models/en_us/g2p-config.json` present so `--only` defaults match your intent (if it is missing, the exporter falls back to CLI-only flags). Re-exporting from the same checkpoints reproduces `model.onnx` and `onnx-config.json` byte-for-byte with the fixed exporter (see `cpp/data/README.md` → *Regeneration verification*).
+   Keep `models/en_us/g2p-config.json` present so `--only` defaults match your intent (if it is missing, the exporter falls back to CLI-only flags). Re-exporting from the same checkpoints reproduces `model.onnx` and `onnx-config.json` byte-for-byte with the fixed exporter (see `data/README.md` → *Regeneration verification*).
 
-5. Copy `dict_filtered_heteronyms.tsv`, `g2p-config.json`, and the `heteronym/` and `oov/` directories into `cpp/data/en_us/` if you maintain this layout.
+5. Copy `dict_filtered_heteronyms.tsv`, `g2p-config.json`, and the `heteronym/` and `oov/` directories into `data/en_us/` if you maintain this layout.
