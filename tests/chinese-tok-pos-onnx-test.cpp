@@ -4,41 +4,30 @@
 #include "chinese-tok-pos-onnx.h"
 #include "rule-g2p-test-support.h"
 
-#include <chrono>
-#include <fstream>
-
 namespace r = moonshine_tts::rule_g2p_test;
 
-TEST_CASE("chinese tok pos: single sentence matches Python reference") {
+TEST_CASE("chinese tok pos: single sentence matches reference file") {
   const auto repo = r::repo_root_from_tests_cpp(__FILE__);
   const auto model = moonshine_tts::default_chinese_tok_pos_model_dir(repo);
-  if (!std::filesystem::is_regular_file(model / "model.onnx")) {
+  const std::filesystem::path golden = r::tests_data_dir(repo) / "zh_hans" / "tok_pos_sample.txt";
+  if (!std::filesystem::is_regular_file(model / "model.onnx") ||
+      !std::filesystem::is_regular_file(golden)) {
     return;
   }
-  const auto tick = std::chrono::steady_clock::now().time_since_epoch().count();
-  const auto tmp = std::filesystem::temp_directory_path() /
-                   ("moonshine_zh_tok_one_" + std::to_string(tick) + ".txt");
-  {
-    std::ofstream o(tmp);
-    o << "上海是一座城市。\n";
-  }
-  const std::vector<std::string> py =
-      r::python_ref_first_lines(repo, "chinese_tok_pos_ref.py", tmp, 1);
-  std::error_code ec;
-  std::filesystem::remove(tmp, ec);
-  REQUIRE(py.size() == 1);
+  const std::string expected = r::load_ref_text_trimmed(golden);
   moonshine_tts::ChineseTokPosOnnx pipe(model, false);
   const auto pairs = pipe.annotate("上海是一座城市。");
-  CHECK(moonshine_tts::ChineseTokPosOnnx::format_annotated_line(pairs) == py[0]);
+  CHECK(moonshine_tts::ChineseTokPosOnnx::format_annotated_line(pairs) == expected);
 }
 
-TEST_CASE("chinese tok pos: first 100 wiki lines match Python when assets exist") {
+TEST_CASE("chinese tok pos: first 100 wiki lines match reference when assets and golden exist") {
   constexpr std::size_t kWikiLines = 100;
   const auto repo = r::repo_root_from_tests_cpp(__FILE__);
   const auto model = moonshine_tts::default_chinese_tok_pos_model_dir(repo);
   const auto wiki = repo / "data" / "zh_hans" / "wiki-text.txt";
+  const std::filesystem::path golden = r::tests_data_dir(repo) / "zh_hans" / "tok_pos_wiki_filtered.txt";
   if (!std::filesystem::is_regular_file(model / "model.onnx") ||
-      !std::filesystem::is_regular_file(wiki)) {
+      !std::filesystem::is_regular_file(wiki) || !std::filesystem::is_regular_file(golden)) {
     return;
   }
   moonshine_tts::ChineseTokPosOnnx pipe(model, false);
@@ -55,19 +44,7 @@ TEST_CASE("chinese tok pos: first 100 wiki lines match Python when assets exist"
   if (tokenizable.empty()) {
     return;
   }
-  const auto tick = std::chrono::steady_clock::now().time_since_epoch().count();
-  const auto tmp = std::filesystem::temp_directory_path() /
-                   ("moonshine_zh_wiki_filt_" + std::to_string(tick) + ".txt");
-  {
-    std::ofstream o(tmp);
-    for (const std::string& line : tokenizable) {
-      o << line << '\n';
-    }
-  }
-  const std::vector<std::string> py =
-      r::python_ref_first_lines(repo, "chinese_tok_pos_ref.py", tmp, static_cast<int>(tokenizable.size()));
-  std::error_code ec;
-  std::filesystem::remove(tmp, ec);
+  const std::vector<std::string> py = r::load_ref_lines(golden);
   REQUIRE(py.size() == tokenizable.size());
   for (std::size_t i = 0; i < tokenizable.size(); ++i) {
     INFO("wiki filtered index " << (i + 1));

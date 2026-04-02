@@ -23,14 +23,6 @@ std::filesystem::path make_temp_tsv(const char* contents) {
   return p;
 }
 
-std::vector<std::string> python_ipa_first_lines(const std::filesystem::path& text_file, int n) {
-  return r::python_ref_first_lines(r::repo_root_from_tests_cpp(__FILE__), "german_g2p_ref.py", text_file, n);
-}
-
-bool python_german_import_ok() {
-  return r::python_import_ok(r::repo_root_from_tests_cpp(__FILE__), "from german_rule_g2p import text_to_ipa");
-}
-
 }  // namespace
 
 TEST_CASE("german: lowercase homograph overrides capitalized") {
@@ -95,39 +87,31 @@ TEST_CASE("german: text token preserves comma") {
   std::filesystem::remove(p);
 }
 
-TEST_CASE("german: Im Jahr 1891 matches Python when data and python3 exist") {
+TEST_CASE("german: Im Jahr 1891 matches reference IPA when data and golden exist") {
   const auto repo = r::repo_root_from_tests_cpp(__FILE__);
   const std::filesystem::path dict = repo / "data" / "de" / "dict.tsv";
-  if (!std::filesystem::is_regular_file(dict) || !python_german_import_ok()) {
+  const std::filesystem::path golden = r::tests_data_dir(repo) / "de" / "rule_g2p_im_jahr_1891.txt";
+  if (!std::filesystem::is_regular_file(dict) || !std::filesystem::is_regular_file(golden)) {
     return;
   }
-  const auto tick = std::chrono::steady_clock::now().time_since_epoch().count();
-  const std::filesystem::path tmp =
-      std::filesystem::temp_directory_path() / ("de_g2p_digits_" + std::to_string(tick) + ".txt");
-  {
-    std::ofstream o(tmp, std::ios::binary);
-    o << "Im Jahr 1891";
-  }
-  const std::vector<std::string> py = r::python_ref_first_lines(repo, "german_g2p_ref.py", tmp, 1);
-  std::error_code ec;
-  std::filesystem::remove(tmp, ec);
-  REQUIRE(py.size() == 1);
+  const std::string expected = r::load_ref_text_trimmed(golden);
   moonshine_tts::GermanRuleG2p g(dict);
-  CHECK(g.text_to_ipa("Im Jahr 1891") == py[0]);
+  CHECK(g.text_to_ipa("Im Jahr 1891") == expected);
 }
 
-TEST_CASE("german: wiki-text first 100 lines match Python when data and python3 exist") {
+TEST_CASE("german: wiki-text first 100 lines match reference IPA when data and golden exist") {
   constexpr std::size_t kWikiParityLines = 100;
   const auto repo = r::repo_root_from_tests_cpp(__FILE__);
   const std::filesystem::path dict = repo / "data" / "de" / "dict.tsv";
   const std::filesystem::path wiki = repo / "data" / "de" / "wiki-text.txt";
+  const std::filesystem::path golden = r::tests_data_dir(repo) / "de" / "rule_g2p_wiki_100.txt";
   if (!std::filesystem::is_regular_file(dict) || !std::filesystem::is_regular_file(wiki) ||
-      !python_german_import_ok()) {
+      !std::filesystem::is_regular_file(golden)) {
     return;
   }
   moonshine_tts::GermanRuleG2p g(dict);
   const auto src = r::read_text_first_lines(wiki, kWikiParityLines);
-  const std::vector<std::string> py = python_ipa_first_lines(wiki, static_cast<int>(src.size()));
+  const std::vector<std::string> py = r::ref_lines_prefix(golden, src.size());
   REQUIRE(py.size() == src.size());
   for (size_t i = 0; i < src.size(); ++i) {
     INFO("wiki line " << (i + 1));

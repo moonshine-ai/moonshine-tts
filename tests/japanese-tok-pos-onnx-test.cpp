@@ -4,47 +4,35 @@
 #include "japanese-tok-pos-onnx.h"
 #include "rule-g2p-test-support.h"
 
-#include <chrono>
-#include <fstream>
-
 namespace r = moonshine_tts::rule_g2p_test;
 
-TEST_CASE("japanese tok pos: single sentence matches Python reference") {
+TEST_CASE("japanese tok pos: single sentence matches reference file") {
   const auto repo = r::repo_root_from_tests_cpp(__FILE__);
   const auto model = moonshine_tts::default_japanese_tok_pos_model_dir(repo);
-  if (!std::filesystem::is_regular_file(model / "model.onnx")) {
+  const std::filesystem::path golden = r::tests_data_dir(repo) / "ja" / "tok_pos_sample.txt";
+  if (!std::filesystem::is_regular_file(model / "model.onnx") ||
+      !std::filesystem::is_regular_file(golden)) {
     return;
   }
-  const auto tick = std::chrono::steady_clock::now().time_since_epoch().count();
-  const auto tmp = std::filesystem::temp_directory_path() /
-                   ("moonshine_ja_tok_one_" + std::to_string(tick) + ".txt");
-  {
-    std::ofstream o(tmp);
-    o << "国境の長いトンネルを抜けると雪国であった。\n";
-  }
-  const std::vector<std::string> py =
-      r::python_ref_first_lines(repo, "japanese_tok_pos_ref.py", tmp, 1);
-  std::error_code ec;
-  std::filesystem::remove(tmp, ec);
-  REQUIRE(py.size() == 1);
+  const std::string expected = r::load_ref_text_trimmed(golden);
   moonshine_tts::JapaneseTokPosOnnx pipe(model, false);
   const auto pairs = pipe.annotate("国境の長いトンネルを抜けると雪国であった。");
-  CHECK(moonshine_tts::JapaneseTokPosOnnx::format_annotated_line(pairs) == py[0]);
+  CHECK(moonshine_tts::JapaneseTokPosOnnx::format_annotated_line(pairs) == expected);
 }
 
-TEST_CASE("japanese tok pos: first 100 wiki lines match Python when assets exist") {
+TEST_CASE("japanese tok pos: first 100 wiki lines match reference when assets and golden exist") {
   constexpr std::size_t kWikiLines = 100;
   const auto repo = r::repo_root_from_tests_cpp(__FILE__);
   const auto model = moonshine_tts::default_japanese_tok_pos_model_dir(repo);
   const auto wiki = repo / "data" / "ja" / "wiki-text.txt";
+  const std::filesystem::path golden = r::tests_data_dir(repo) / "ja" / "tok_pos_wiki_100.txt";
   if (!std::filesystem::is_regular_file(model / "model.onnx") ||
-      !std::filesystem::is_regular_file(wiki)) {
+      !std::filesystem::is_regular_file(wiki) || !std::filesystem::is_regular_file(golden)) {
     return;
   }
   moonshine_tts::JapaneseTokPosOnnx pipe(model, false);
   const auto src = r::read_text_first_lines(wiki, kWikiLines);
-  const std::vector<std::string> py =
-      r::python_ref_first_lines(repo, "japanese_tok_pos_ref.py", wiki, static_cast<int>(src.size()));
+  const std::vector<std::string> py = r::ref_lines_prefix(golden, src.size());
   REQUIRE(py.size() == src.size());
   for (std::size_t i = 0; i < src.size(); ++i) {
     INFO("wiki line " << (i + 1));

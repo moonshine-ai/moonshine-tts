@@ -1,13 +1,12 @@
 #ifndef MOONSHINE_TTS_TESTS_RULE_G2P_TEST_SUPPORT_H
 #define MOONSHINE_TTS_TESTS_RULE_G2P_TEST_SUPPORT_H
 
-/// Shared helpers for rule-G2P parity tests (Python reference scripts, wiki samples).
+/// Shared helpers for rule-G2P / ONNX parity tests (pre-generated reference lines under ``tests/data/``).
 
-#include <cstdio>
-#include <cstdlib>
+#include <cstddef>
 #include <filesystem>
 #include <fstream>
-#include <iomanip>
+#include <iterator>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -18,33 +17,14 @@ inline std::filesystem::path repo_root_from_tests_cpp(const char* tests_cpp_file
   return std::filesystem::path(tests_cpp_file).parent_path().parent_path().parent_path();
 }
 
-/// Parity ref scripts: embedded monorepo uses ``<repo>/moonshine-tts/tests/*.py``; legacy tree used
-/// ``<repo>/cpp/tests/*.py``.
-inline std::filesystem::path ref_python_script(const std::filesystem::path& repo_root,
-                                                 const char* script_name) {
+/// Pre-generated parity data: ``<repo>/moonshine-tts/tests/data`` or legacy ``<repo>/cpp/tests/data``.
+inline std::filesystem::path tests_data_dir(const std::filesystem::path& repo_root) {
   namespace fs = std::filesystem;
-  const fs::path submodule = repo_root / "moonshine-tts" / "tests" / script_name;
-  if (fs::is_regular_file(submodule)) {
+  const fs::path submodule = repo_root / "moonshine-tts" / "tests" / "data";
+  if (fs::is_directory(submodule)) {
     return submodule;
   }
-  return repo_root / "cpp" / "tests" / script_name;
-}
-
-inline std::string shell_capture(const std::string& cmd) {
-  FILE* pipe = popen(cmd.c_str(), "r");
-  if (pipe == nullptr) {
-    return {};
-  }
-  std::string out;
-  char buf[8192];
-  while (fgets(buf, sizeof(buf), pipe) != nullptr) {
-    out += buf;
-  }
-  (void)pclose(pipe);
-  while (!out.empty() && (out.back() == '\n' || out.back() == '\r')) {
-    out.pop_back();
-  }
-  return out;
+  return repo_root / "cpp" / "tests" / "data";
 }
 
 inline std::vector<std::string> split_unix_lines(std::string block) {
@@ -60,44 +40,29 @@ inline std::vector<std::string> split_unix_lines(std::string block) {
   return lines;
 }
 
-/// Run ``python3`` on a ref script under ``moonshine-tts/tests/`` or ``cpp/tests/`` with ``PYTHONPATH``
-/// set to the repo root.
-/// *before_text_path* / *after_text_path* bracket the quoted wiki (or line) file path on the command line.
-inline std::vector<std::string> python_ref_first_lines(
-    const std::filesystem::path& repo, const char* script_name, const std::filesystem::path& text_file, int n,
-    const std::vector<std::string>& before_text_path = {},
-    const std::vector<std::string>& after_text_path = {}) {
-  const std::filesystem::path script = ref_python_script(repo, script_name);
-  std::ostringstream cmd;
-  cmd << "env PYTHONPATH=" << std::quoted(repo.string()) << " python3 " << std::quoted(script.string());
-  for (const std::string& a : before_text_path) {
-    cmd << " " << a;
+inline std::string load_ref_text_trimmed(const std::filesystem::path& p) {
+  std::ifstream in(p);
+  std::string s((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
+  while (!s.empty() && (s.back() == '\n' || s.back() == '\r')) {
+    s.pop_back();
   }
-  cmd << " " << std::quoted(text_file.string());
-  for (const std::string& a : after_text_path) {
-    cmd << " " << a;
-  }
-  cmd << " --first-lines " << n;
-  return split_unix_lines(shell_capture(cmd.str()));
+  return s;
 }
 
-inline std::string python_ref_from_utf8_file(const std::filesystem::path& repo, const char* script_name,
-                                             const std::filesystem::path& utf8_file,
-                                             const std::vector<std::string>& extra_args_after_path = {}) {
-  const std::filesystem::path script = ref_python_script(repo, script_name);
-  std::ostringstream cmd;
-  cmd << "env PYTHONPATH=" << std::quoted(repo.string()) << " python3 " << std::quoted(script.string()) << " "
-      << std::quoted(utf8_file.string());
-  for (const std::string& a : extra_args_after_path) {
-    cmd << " " << a;
-  }
-  return shell_capture(cmd.str());
+inline std::vector<std::string> load_ref_lines(const std::filesystem::path& p) {
+  std::ifstream in(p);
+  std::string block((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
+  return split_unix_lines(std::move(block));
 }
 
-inline bool python_import_ok(const std::filesystem::path& repo, const char* dash_c_body) {
-  std::ostringstream cmd;
-  cmd << "env PYTHONPATH=" << std::quoted(repo.string()) << " python3 -c " << std::quoted(dash_c_body);
-  return std::system(cmd.str().c_str()) == 0;
+/// Use the first *n* lines from a golden file (generated for up to 100 wiki lines).
+inline std::vector<std::string> ref_lines_prefix(const std::filesystem::path& golden, std::size_t n) {
+  const std::vector<std::string> all = load_ref_lines(golden);
+  if (all.size() < n) {
+    return {};
+  }
+  using diff = std::vector<std::string>::difference_type;
+  return std::vector<std::string>(all.begin(), all.begin() + static_cast<diff>(n));
 }
 
 inline std::vector<std::string> read_text_first_lines(const std::filesystem::path& p, std::size_t n) {

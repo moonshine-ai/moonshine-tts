@@ -23,14 +23,6 @@ std::filesystem::path make_temp_tsv(const char* contents) {
   return p;
 }
 
-std::vector<std::string> python_ipa_first_lines(const std::filesystem::path& text_file, int n) {
-  return r::python_ref_first_lines(r::repo_root_from_tests_cpp(__FILE__), "dutch_g2p_ref.py", text_file, n);
-}
-
-bool python_dutch_import_ok() {
-  return r::python_import_ok(r::repo_root_from_tests_cpp(__FILE__), "from dutch_rule_g2p import text_to_ipa");
-}
-
 }  // namespace
 
 TEST_CASE("dutch: lowercase homograph overrides capitalized") {
@@ -88,18 +80,19 @@ TEST_CASE("dutch: optional real dict fiets matches Python when data present") {
   CHECK(g.word_to_ipa("fiets") == "\xCB\x88" "fi" "\xCB\x90" "ts");
 }
 
-TEST_CASE("dutch: wiki-text first 100 lines match Python when data and python3 exist") {
+TEST_CASE("dutch: wiki-text first 100 lines match reference IPA when data and golden exist") {
   constexpr std::size_t kWikiParityLines = 100;
   const auto repo = r::repo_root_from_tests_cpp(__FILE__);
   const std::filesystem::path dict = repo / "data" / "nl" / "dict.tsv";
   const std::filesystem::path wiki = repo / "data" / "nl" / "wiki-text.txt";
+  const std::filesystem::path golden = r::tests_data_dir(repo) / "nl" / "rule_g2p_wiki_100.txt";
   if (!std::filesystem::is_regular_file(dict) || !std::filesystem::is_regular_file(wiki) ||
-      !python_dutch_import_ok()) {
+      !std::filesystem::is_regular_file(golden)) {
     return;
   }
   moonshine_tts::DutchRuleG2p g(dict);
   const auto src = r::read_text_first_lines(wiki, kWikiParityLines);
-  const std::vector<std::string> py = python_ipa_first_lines(wiki, static_cast<int>(src.size()));
+  const std::vector<std::string> py = r::ref_lines_prefix(golden, src.size());
   REQUIRE(py.size() == src.size());
   for (size_t i = 0; i < src.size(); ++i) {
     INFO("wiki line " << (i + 1));

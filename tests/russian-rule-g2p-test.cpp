@@ -27,32 +27,6 @@ std::filesystem::path make_temp_tsv(const char* contents) {
   return p;
 }
 
-std::string python_ipa_from_file(const std::filesystem::path& utf8_file) {
-  return r::python_ref_from_utf8_file(r::repo_root_from_tests_cpp(__FILE__), "russian_g2p_ref.py", utf8_file);
-}
-
-std::string python_ipa_one_line(const std::string& line) {
-  const auto tick = std::chrono::steady_clock::now().time_since_epoch().count();
-  const std::filesystem::path tmp =
-      std::filesystem::temp_directory_path() / ("ru_g2p_line_" + std::to_string(tick) + ".txt");
-  {
-    std::ofstream o(tmp, std::ios::binary);
-    o << line;
-  }
-  const std::string py = python_ipa_from_file(tmp);
-  std::error_code ec;
-  std::filesystem::remove(tmp, ec);
-  return py;
-}
-
-std::vector<std::string> python_ipa_first_lines(const std::filesystem::path& text_file, int n) {
-  return r::python_ref_first_lines(r::repo_root_from_tests_cpp(__FILE__), "russian_g2p_ref.py", text_file, n);
-}
-
-bool python_russian_import_ok() {
-  return r::python_import_ok(r::repo_root_from_tests_cpp(__FILE__), "from russian_rule_g2p import text_to_ipa");
-}
-
 }  // namespace
 
 TEST_CASE("russian: dialect_resolves_to_russian_rules") {
@@ -90,52 +64,44 @@ TEST_CASE("russian: MoonshineG2P ru uses rule backend and matches RussianRuleG2p
 }
 #endif
 
-TEST_CASE("russian: litva matches Python when data and python3 exist") {
-  const std::filesystem::path dict = r::repo_root_from_tests_cpp(__FILE__) / "data" / "ru" / "dict.tsv";
-  if (!std::filesystem::is_regular_file(dict) || !python_russian_import_ok()) {
+TEST_CASE("russian: litva matches reference IPA when data and golden exist") {
+  const auto repo = r::repo_root_from_tests_cpp(__FILE__);
+  const std::filesystem::path dict = repo / "data" / "ru" / "dict.tsv";
+  const std::filesystem::path golden = r::tests_data_dir(repo) / "ru" / "rule_g2p_litva_word.txt";
+  if (!std::filesystem::is_regular_file(dict) || !std::filesystem::is_regular_file(golden)) {
     return;
   }
   moonshine_tts::RussianRuleG2p g(dict);
-  const std::string py = python_ipa_one_line(
-      "\xD0\x9B\xD0\xB8\xD1\x82\xD0\xB2\xD0\xB0");
-  CHECK(g.word_to_ipa(
-            "\xD0\x9B\xD0\xB8\xD1\x82\xD0\xB2\xD0\xB0") == py);
+  const std::string expected = r::load_ref_text_trimmed(golden);
+  CHECK(g.word_to_ipa("\xD0\x9B\xD0\xB8\xD1\x82\xD0\xB2\xD0\xB0") == expected);
 }
 
-TEST_CASE("russian: Cyrillic preposition plus 1891 matches Python when data and python3 exist") {
+TEST_CASE("russian: Cyrillic preposition plus 1891 matches reference IPA when data and golden exist") {
   const auto repo = r::repo_root_from_tests_cpp(__FILE__);
   const std::filesystem::path dict = repo / "data" / "ru" / "dict.tsv";
-  if (!std::filesystem::is_regular_file(dict) || !python_russian_import_ok()) {
+  const std::filesystem::path golden = r::tests_data_dir(repo) / "ru" / "rule_g2p_v_1891_line.txt";
+  if (!std::filesystem::is_regular_file(dict) || !std::filesystem::is_regular_file(golden)) {
     return;
   }
   const std::string line = "\xD0\x92 1891";  // "В 1891"
-  const auto tick = std::chrono::steady_clock::now().time_since_epoch().count();
-  const std::filesystem::path tmp =
-      std::filesystem::temp_directory_path() / ("ru_g2p_digits_" + std::to_string(tick) + ".txt");
-  {
-    std::ofstream o(tmp, std::ios::binary);
-    o << line;
-  }
-  const std::vector<std::string> py = python_ipa_first_lines(tmp, 1);
-  std::error_code ec;
-  std::filesystem::remove(tmp, ec);
-  REQUIRE(py.size() == 1);
+  const std::string expected = r::load_ref_text_trimmed(golden);
   moonshine_tts::RussianRuleG2p g(dict);
-  CHECK(g.text_to_ipa(line) == py[0]);
+  CHECK(g.text_to_ipa(line) == expected);
 }
 
-TEST_CASE("russian: wiki-text first 100 lines match Python when data and python3 exist") {
+TEST_CASE("russian: wiki-text first 100 lines match reference IPA when data and golden exist") {
   constexpr std::size_t kWikiParityLines = 100;
   const auto repo = r::repo_root_from_tests_cpp(__FILE__);
   const std::filesystem::path dict = repo / "data" / "ru" / "dict.tsv";
   const std::filesystem::path wiki = repo / "data" / "ru" / "wiki-text.txt";
+  const std::filesystem::path golden = r::tests_data_dir(repo) / "ru" / "rule_g2p_wiki_100.txt";
   if (!std::filesystem::is_regular_file(dict) || !std::filesystem::is_regular_file(wiki) ||
-      !python_russian_import_ok()) {
+      !std::filesystem::is_regular_file(golden)) {
     return;
   }
   moonshine_tts::RussianRuleG2p g(dict);
   const auto src = r::read_text_first_lines(wiki, kWikiParityLines);
-  const std::vector<std::string> py = python_ipa_first_lines(wiki, static_cast<int>(src.size()));
+  const std::vector<std::string> py = r::ref_lines_prefix(golden, src.size());
   REQUIRE(py.size() == src.size());
   for (size_t i = 0; i < src.size(); ++i) {
     INFO("wiki line " << (i + 1));

@@ -37,14 +37,6 @@ bool french_dict_present() {
   return std::filesystem::is_regular_file(r::repo_root_from_tests_cpp(__FILE__) / "data" / "fr" / "dict.tsv");
 }
 
-std::vector<std::string> python_ipa_first_lines(const std::filesystem::path& text_file, int n) {
-  return r::python_ref_first_lines(r::repo_root_from_tests_cpp(__FILE__), "french_g2p_ref.py", text_file, n);
-}
-
-bool python_french_import_ok() {
-  return r::python_import_ok(r::repo_root_from_tests_cpp(__FILE__), "from french_g2p import text_to_ipa");
-}
-
 }  // namespace
 
 TEST_CASE("french: dialect_resolves_to_french_rules") {
@@ -111,19 +103,20 @@ TEST_CASE("french: uppercase accented letters in words (Saint-Étienne)" *
   CHECK(g.text_to_ipa("Saint-\xC3\x89tienne") == "sˈɛ̃-etjˈɛ̃n");
 }
 
-TEST_CASE("french: wiki-text first 100 lines match Python when data and python3 exist") {
+TEST_CASE("french: wiki-text first 100 lines match reference IPA when data and golden exist") {
   constexpr std::size_t kWikiParityLines = 100;
   const auto repo = r::repo_root_from_tests_cpp(__FILE__);
   const std::filesystem::path dict = repo / "data" / "fr" / "dict.tsv";
   const std::filesystem::path wiki = repo / "data" / "fr" / "wiki-text.txt";
+  const std::filesystem::path golden = r::tests_data_dir(repo) / "fr" / "rule_g2p_wiki_100.txt";
   if (!std::filesystem::is_regular_file(dict) || !std::filesystem::is_regular_file(wiki) ||
-      !python_french_import_ok()) {
+      !std::filesystem::is_regular_file(golden)) {
     return;
   }
   const auto csv = dict.parent_path();
   moonshine_tts::FrenchRuleG2p g(dict, csv);
   const auto src = r::read_text_first_lines(wiki, kWikiParityLines);
-  const std::vector<std::string> py = python_ipa_first_lines(wiki, static_cast<int>(src.size()));
+  const std::vector<std::string> py = r::ref_lines_prefix(golden, src.size());
   REQUIRE(py.size() == src.size());
   for (size_t i = 0; i < src.size(); ++i) {
     INFO("wiki line " << (i + 1));

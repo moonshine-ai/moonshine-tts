@@ -23,42 +23,6 @@ std::filesystem::path make_temp_tsv(const char* contents) {
   return p;
 }
 
-std::string python_ipa_from_file(const std::filesystem::path& utf8_file, bool portugal) {
-  const auto repo = r::repo_root_from_tests_cpp(__FILE__);
-  std::vector<std::string> after;
-  if (portugal) {
-    after.push_back("--portugal");
-  }
-  return r::python_ref_from_utf8_file(repo, "portuguese_g2p_ref.py", utf8_file, after);
-}
-
-std::string python_ipa_one_line(const std::string& line, bool portugal) {
-  const auto tick = std::chrono::steady_clock::now().time_since_epoch().count();
-  const std::filesystem::path tmp =
-      std::filesystem::temp_directory_path() / ("pt_g2p_line_" + std::to_string(tick) + ".txt");
-  {
-    std::ofstream o(tmp, std::ios::binary);
-    o << line;
-  }
-  const std::string py = python_ipa_from_file(tmp, portugal);
-  std::error_code ec;
-  std::filesystem::remove(tmp, ec);
-  return py;
-}
-
-std::vector<std::string> python_ipa_first_lines(const std::filesystem::path& text_file, int n, bool portugal) {
-  std::vector<std::string> after;
-  if (portugal) {
-    after.push_back("--portugal");
-  }
-  return r::python_ref_first_lines(r::repo_root_from_tests_cpp(__FILE__), "portuguese_g2p_ref.py", text_file, n,
-                                   {}, after);
-}
-
-bool python_portuguese_import_ok() {
-  return r::python_import_ok(r::repo_root_from_tests_cpp(__FILE__), "from portuguese_rule_g2p import text_to_ipa");
-}
-
 }  // namespace
 
 TEST_CASE("portuguese: dialect flags") {
@@ -90,28 +54,31 @@ TEST_CASE("portuguese: lexicon stress not shifted by vocoder") {
   std::filesystem::remove(p);
 }
 
-TEST_CASE("portuguese: casa matches Python when data and python3 exist") {
-  const std::filesystem::path dict = r::repo_root_from_tests_cpp(__FILE__) / "data" / "pt_br" / "dict.tsv";
-  if (!std::filesystem::is_regular_file(dict) || !python_portuguese_import_ok()) {
+TEST_CASE("portuguese: casa matches reference IPA when data and golden exist") {
+  const auto repo = r::repo_root_from_tests_cpp(__FILE__);
+  const std::filesystem::path dict = repo / "data" / "pt_br" / "dict.tsv";
+  const std::filesystem::path golden = r::tests_data_dir(repo) / "pt_br" / "rule_g2p_casa.txt";
+  if (!std::filesystem::is_regular_file(dict) || !std::filesystem::is_regular_file(golden)) {
     return;
   }
   moonshine_tts::PortugueseRuleG2p g(dict, false);
-  const std::string py = python_ipa_one_line("casa", false);
-  CHECK(g.text_to_ipa("casa") == py);
+  const std::string expected = r::load_ref_text_trimmed(golden);
+  CHECK(g.text_to_ipa("casa") == expected);
 }
 
-TEST_CASE("portuguese: wiki-text first 100 lines pt_br match Python when data present") {
+TEST_CASE("portuguese: wiki-text first 100 lines pt_br match reference IPA when data and golden exist") {
   constexpr std::size_t kWikiParityLines = 100;
   const auto repo = r::repo_root_from_tests_cpp(__FILE__);
   const std::filesystem::path dict = repo / "data" / "pt_br" / "dict.tsv";
   const std::filesystem::path wiki = repo / "data" / "pt_br" / "wiki-text.txt";
+  const std::filesystem::path golden = r::tests_data_dir(repo) / "pt_br" / "rule_g2p_wiki_100.txt";
   if (!std::filesystem::is_regular_file(dict) || !std::filesystem::is_regular_file(wiki) ||
-      !python_portuguese_import_ok()) {
+      !std::filesystem::is_regular_file(golden)) {
     return;
   }
   moonshine_tts::PortugueseRuleG2p g(dict, false);
   const auto src = r::read_text_first_lines(wiki, kWikiParityLines);
-  const std::vector<std::string> py = python_ipa_first_lines(wiki, static_cast<int>(src.size()), false);
+  const std::vector<std::string> py = r::ref_lines_prefix(golden, src.size());
   REQUIRE(py.size() == src.size());
   for (size_t i = 0; i < src.size(); ++i) {
     INFO("pt_br wiki line " << (i + 1));
@@ -119,18 +86,19 @@ TEST_CASE("portuguese: wiki-text first 100 lines pt_br match Python when data pr
   }
 }
 
-TEST_CASE("portuguese: wiki-text first 100 lines pt_pt match Python when data present") {
+TEST_CASE("portuguese: wiki-text first 100 lines pt_pt match reference IPA when data and golden exist") {
   constexpr std::size_t kWikiParityLines = 100;
   const auto repo = r::repo_root_from_tests_cpp(__FILE__);
   const std::filesystem::path dict = repo / "data" / "pt_pt" / "dict.tsv";
   const std::filesystem::path wiki = repo / "data" / "pt_pt" / "wiki-text.txt";
+  const std::filesystem::path golden = r::tests_data_dir(repo) / "pt_pt" / "rule_g2p_wiki_100.txt";
   if (!std::filesystem::is_regular_file(dict) || !std::filesystem::is_regular_file(wiki) ||
-      !python_portuguese_import_ok()) {
+      !std::filesystem::is_regular_file(golden)) {
     return;
   }
   moonshine_tts::PortugueseRuleG2p g(dict, true);
   const auto src = r::read_text_first_lines(wiki, kWikiParityLines);
-  const std::vector<std::string> py = python_ipa_first_lines(wiki, static_cast<int>(src.size()), true);
+  const std::vector<std::string> py = r::ref_lines_prefix(golden, src.size());
   REQUIRE(py.size() == src.size());
   for (size_t i = 0; i < src.size(); ++i) {
     INFO("pt_pt wiki line " << (i + 1));

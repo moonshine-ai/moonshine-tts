@@ -23,32 +23,6 @@ std::filesystem::path make_temp_tsv(const char* contents) {
   return p;
 }
 
-std::string python_ipa_from_file(const std::filesystem::path& utf8_file) {
-  return r::python_ref_from_utf8_file(r::repo_root_from_tests_cpp(__FILE__), "italian_g2p_ref.py", utf8_file);
-}
-
-std::string python_ipa_one_line(const std::string& line) {
-  const auto tick = std::chrono::steady_clock::now().time_since_epoch().count();
-  const std::filesystem::path tmp =
-      std::filesystem::temp_directory_path() / ("it_g2p_line_" + std::to_string(tick) + ".txt");
-  {
-    std::ofstream o(tmp, std::ios::binary);
-    o << line;
-  }
-  const std::string py = python_ipa_from_file(tmp);
-  std::error_code ec;
-  std::filesystem::remove(tmp, ec);
-  return py;
-}
-
-std::vector<std::string> python_ipa_first_lines(const std::filesystem::path& text_file, int n) {
-  return r::python_ref_first_lines(r::repo_root_from_tests_cpp(__FILE__), "italian_g2p_ref.py", text_file, n);
-}
-
-bool python_italian_import_ok() {
-  return r::python_import_ok(r::repo_root_from_tests_cpp(__FILE__), "from italian_rule_g2p import text_to_ipa");
-}
-
 }  // namespace
 
 TEST_CASE("italian: dialect_resolves_to_italian_rules") {
@@ -78,30 +52,33 @@ TEST_CASE("italian: lexicon stress not shifted by vocoder") {
   std::filesystem::remove(p);
 }
 
-TEST_CASE("italian: c'è matches Python when available") {
-  const std::filesystem::path dict = r::repo_root_from_tests_cpp(__FILE__) / "data" / "it" / "dict.tsv";
-  if (!std::filesystem::is_regular_file(dict) || !python_italian_import_ok()) {
+TEST_CASE("italian: c'è matches reference IPA when data and golden exist") {
+  const auto repo = r::repo_root_from_tests_cpp(__FILE__);
+  const std::filesystem::path dict = repo / "data" / "it" / "dict.tsv";
+  const std::filesystem::path g_ascii = r::tests_data_dir(repo) / "it" / "rule_g2p_ce_ascii.txt";
+  const std::filesystem::path g_curly = r::tests_data_dir(repo) / "it" / "rule_g2p_ce_curly.txt";
+  if (!std::filesystem::is_regular_file(dict) || !std::filesystem::is_regular_file(g_ascii) ||
+      !std::filesystem::is_regular_file(g_curly)) {
     return;
   }
   moonshine_tts::ItalianRuleG2p g(dict);
-  const std::string py_ascii = python_ipa_one_line("c'è");
-  CHECK(g.text_to_ipa("c'è") == py_ascii);
-  const std::string py_typo = python_ipa_one_line("c\u2019\u00e8");
-  CHECK(g.text_to_ipa("c\u2019\u00e8") == py_typo);
+  CHECK(g.text_to_ipa("c'è") == r::load_ref_text_trimmed(g_ascii));
+  CHECK(g.text_to_ipa("c\u2019\u00e8") == r::load_ref_text_trimmed(g_curly));
 }
 
-TEST_CASE("italian: wiki-text first 100 lines match Python when data and python3 exist") {
+TEST_CASE("italian: wiki-text first 100 lines match reference IPA when data and golden exist") {
   constexpr std::size_t kWikiParityLines = 100;
   const auto repo = r::repo_root_from_tests_cpp(__FILE__);
   const std::filesystem::path dict = repo / "data" / "it" / "dict.tsv";
   const std::filesystem::path wiki = repo / "data" / "it" / "wiki-text.txt";
+  const std::filesystem::path golden = r::tests_data_dir(repo) / "it" / "rule_g2p_wiki_100.txt";
   if (!std::filesystem::is_regular_file(dict) || !std::filesystem::is_regular_file(wiki) ||
-      !python_italian_import_ok()) {
+      !std::filesystem::is_regular_file(golden)) {
     return;
   }
   moonshine_tts::ItalianRuleG2p g(dict);
   const auto src = r::read_text_first_lines(wiki, kWikiParityLines);
-  const std::vector<std::string> py = python_ipa_first_lines(wiki, static_cast<int>(src.size()));
+  const std::vector<std::string> py = r::ref_lines_prefix(golden, src.size());
   REQUIRE(py.size() == src.size());
   for (size_t i = 0; i < src.size(); ++i) {
     INFO("wiki line " << (i + 1));
