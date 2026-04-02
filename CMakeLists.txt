@@ -11,6 +11,10 @@
 # Run tests (doctest) via CTest:
 #   cmake --build cpp/build && (cd cpp/build && ctest --output-on-failure)
 #
+# From this directory (submodule): ``cmake -S . -B build && cmake --build build && ctest --output-on-failure``.
+# Parity tests expect the parent monorepo layout (``../data``, ``../models``, Python G2P modules beside
+# ``moonshine-tts/``); ref scripts live under ``moonshine-tts/tests/*.py``.
+#
 # Doctest layout follows https://github.com/moonshine-ai/moonshine/blob/main/core/moonshine-c-api-test.cpp
 cmake_minimum_required(VERSION 3.18)
 project(moonshine_tts_onnx LANGUAGES C CXX)

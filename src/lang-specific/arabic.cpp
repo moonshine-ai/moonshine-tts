@@ -141,7 +141,7 @@ std::string ArabicRuleG2p::g2p_word(std::string_view word_utf8) {
   }
   const std::string diac = diac_->diacritize(w);
   const std::string filled = arabic_msa_apply_onnx_partial_postprocess_utf8(diac);
-  return arabic_msa_word_to_ipa_with_assimilation_utf8(filled);
+  return arabic_msa_word_to_ipa_with_assimilation_utf8(filled, w);
 }
 
 std::string ArabicRuleG2p::text_to_ipa(std::string text, std::vector<G2pWordLog>* per_word_log) {

@@ -18,6 +18,18 @@ inline std::filesystem::path repo_root_from_tests_cpp(const char* tests_cpp_file
   return std::filesystem::path(tests_cpp_file).parent_path().parent_path().parent_path();
 }
 
+/// Parity ref scripts: embedded monorepo uses ``<repo>/moonshine-tts/tests/*.py``; legacy tree used
+/// ``<repo>/cpp/tests/*.py``.
+inline std::filesystem::path ref_python_script(const std::filesystem::path& repo_root,
+                                                 const char* script_name) {
+  namespace fs = std::filesystem;
+  const fs::path submodule = repo_root / "moonshine-tts" / "tests" / script_name;
+  if (fs::is_regular_file(submodule)) {
+    return submodule;
+  }
+  return repo_root / "cpp" / "tests" / script_name;
+}
+
 inline std::string shell_capture(const std::string& cmd) {
   FILE* pipe = popen(cmd.c_str(), "r");
   if (pipe == nullptr) {
@@ -48,13 +60,14 @@ inline std::vector<std::string> split_unix_lines(std::string block) {
   return lines;
 }
 
-/// Run ``python3`` on a ref script under ``cpp/tests/`` with ``PYTHONPATH`` set to the repo root.
+/// Run ``python3`` on a ref script under ``moonshine-tts/tests/`` or ``cpp/tests/`` with ``PYTHONPATH``
+/// set to the repo root.
 /// *before_text_path* / *after_text_path* bracket the quoted wiki (or line) file path on the command line.
 inline std::vector<std::string> python_ref_first_lines(
     const std::filesystem::path& repo, const char* script_name, const std::filesystem::path& text_file, int n,
     const std::vector<std::string>& before_text_path = {},
     const std::vector<std::string>& after_text_path = {}) {
-  const std::filesystem::path script = repo / "cpp" / "tests" / script_name;
+  const std::filesystem::path script = ref_python_script(repo, script_name);
   std::ostringstream cmd;
   cmd << "env PYTHONPATH=" << std::quoted(repo.string()) << " python3 " << std::quoted(script.string());
   for (const std::string& a : before_text_path) {
@@ -71,7 +84,7 @@ inline std::vector<std::string> python_ref_first_lines(
 inline std::string python_ref_from_utf8_file(const std::filesystem::path& repo, const char* script_name,
                                              const std::filesystem::path& utf8_file,
                                              const std::vector<std::string>& extra_args_after_path = {}) {
-  const std::filesystem::path script = repo / "cpp" / "tests" / script_name;
+  const std::filesystem::path script = ref_python_script(repo, script_name);
   std::ostringstream cmd;
   cmd << "env PYTHONPATH=" << std::quoted(repo.string()) << " python3 " << std::quoted(script.string()) << " "
       << std::quoted(utf8_file.string());

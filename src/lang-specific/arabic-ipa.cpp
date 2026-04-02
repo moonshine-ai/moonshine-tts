@@ -417,13 +417,19 @@ std::string arabic_msa_apply_onnx_partial_postprocess_utf8(std::string_view utf8
   return u32_to_utf8_str(u32_nfc_u32(u));
 }
 
-std::string arabic_msa_word_to_ipa_with_assimilation_utf8(std::string_view utf8) {
-  std::string wtrim = trim_ascii_ws_copy(utf8);
+std::string arabic_msa_word_to_ipa_with_assimilation_utf8(std::string_view filled_diac_utf8,
+                                                            std::string_view assimilation_prefix_source_utf8) {
+  const std::string wtrim = trim_ascii_ws_copy(filled_diac_utf8);
   std::u32string w = u32_nfc_u32(utf8_str_to_u32(wtrim));
   if (w.empty()) {
     return "";
   }
-  std::u32string bare = strip_ar_diac_u32(w);
+  const std::string key_src =
+      assimilation_prefix_source_utf8.empty()
+          ? std::string(filled_diac_utf8)
+          : std::string(assimilation_prefix_source_utf8);
+  const std::string key_trim = trim_ascii_ws_copy(key_src);
+  std::u32string bare = strip_ar_diac_u32(u32_nfc_u32(utf8_str_to_u32(key_trim)));
   if (bare.size() >= 3 && bare[0] == U'\u0627' && bare[1] == U'\u0644' && kSun.count(bare[2]) != 0) {
     std::u32string stem = w.substr(2);
     std::string onset = onset_ipa(bare[2]);
