@@ -1,6 +1,6 @@
-#include "moonshine-g2p/lang-specific/vietnamese.h"
-#include "moonshine-g2p/g2p-word-log.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "vietnamese.h"
+#include "g2p-word-log.h"
+#include "utf8-utils.h"
 
 #include <cctype>
 #include <cstring>
@@ -15,7 +15,7 @@ extern "C" {
 #include <utf8proc.h>
 }
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
 std::string utf8_nfc_utf8proc(std::string_view s) {
@@ -892,4 +892,4 @@ std::filesystem::path resolve_vietnamese_dict_path(const std::filesystem::path& 
   return model_root / "vi" / "dict.tsv";
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

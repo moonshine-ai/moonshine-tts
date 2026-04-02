@@ -1,10 +1,10 @@
-#ifndef MOONSHINE_G2P_RULE_BASED_G2P_H
-#define MOONSHINE_G2P_RULE_BASED_G2P_H
+#ifndef MOONSHINE_TTS_RULE_BASED_G2P_H
+#define MOONSHINE_TTS_RULE_BASED_G2P_H
 
 #include <string>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 struct G2pWordLog;
 
@@ -17,6 +17,6 @@ class RuleBasedG2p {
                                   std::vector<G2pWordLog>* per_word_log = nullptr) = 0;
 };
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_RULE_BASED_G2P_H
+#endif  // MOONSHINE_TTS_RULE_BASED_G2P_H

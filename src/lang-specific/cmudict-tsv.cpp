@@ -1,12 +1,12 @@
-#include "moonshine-g2p/cmudict-tsv.h"
+#include "cmudict-tsv.h"
 
-#include "moonshine-g2p/text-normalize.h"
+#include "text-normalize.h"
 
 #include <fstream>
 #include <set>
 #include <sstream>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 CmudictTsv::CmudictTsv(const std::filesystem::path& path) {
   std::ifstream in(path);
@@ -59,4 +59,4 @@ const std::vector<std::string>* CmudictTsv::lookup(std::string_view key) const {
   return &it->second;
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

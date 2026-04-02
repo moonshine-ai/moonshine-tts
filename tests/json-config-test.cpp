@@ -1,12 +1,12 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "moonshine-g2p/json-config.h"
+#include "json-config.h"
 
 #include <filesystem>
 #include <fstream>
 
-using namespace moonshine_g2p;
+using namespace moonshine_tts;
 
 TEST_CASE("load_oov_tables from onnx-config.json") {
   const auto dir = std::filesystem::temp_directory_path() / "g2p_cfg_test";

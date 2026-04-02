@@ -1,8 +1,8 @@
-#ifndef MOONSHINE_G2P_PIPER_TTS_H
-#define MOONSHINE_G2P_PIPER_TTS_H
+#ifndef MOONSHINE_TTS_PIPER_TTS_H
+#define MOONSHINE_TTS_PIPER_TTS_H
 
-#include "moonshine-g2p/builtin-cpp-data-root.h"
-#include "moonshine-g2p/moonshine-g2p-options.h"
+#include "builtin-cpp-data-root.h"
+#include "moonshine-g2p-options.h"
 
 #include <cstdint>
 #include <filesystem>
@@ -12,7 +12,7 @@
 #include <string_view>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 /// ``cpp/data/<lang>/piper-voices`` for bundled ONNX + ``.onnx.json`` (see ``scripts/download_piper_voices_for_g2p.py``).
 std::filesystem::path builtin_piper_voices_dir(std::string_view data_subdir);
@@ -68,6 +68,6 @@ class PiperTTS {
   std::unique_ptr<Impl> impl_;
 };
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_PIPER_TTS_H
+#endif  // MOONSHINE_TTS_PIPER_TTS_H

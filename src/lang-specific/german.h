@@ -1,14 +1,14 @@
-#ifndef MOONSHINE_G2P_LANG_SPECIFIC_GERMAN_H
-#define MOONSHINE_G2P_LANG_SPECIFIC_GERMAN_H
+#ifndef MOONSHINE_TTS_LANG_SPECIFIC_GERMAN_H
+#define MOONSHINE_TTS_LANG_SPECIFIC_GERMAN_H
 
-#include "moonshine-g2p/rule-based-g2p.h"
+#include "rule-based-g2p.h"
 
 #include <filesystem>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 struct G2pWordLog;
 
@@ -55,6 +55,6 @@ class GermanRuleG2p : public RuleBasedG2p {
 /// True for ``de``, ``de-DE``, ``de_de``, ``german`` (case-insensitive).
 bool dialect_resolves_to_german_rules(std::string_view dialect_id);
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_LANG_SPECIFIC_GERMAN_H
+#endif  // MOONSHINE_TTS_LANG_SPECIFIC_GERMAN_H

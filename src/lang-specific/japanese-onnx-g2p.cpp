@@ -1,6 +1,6 @@
-#include "moonshine-g2p/japanese-onnx-g2p.h"
-#include "moonshine-g2p/japanese-kana-to-ipa.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "japanese-onnx-g2p.h"
+#include "japanese-kana-to-ipa.h"
+#include "utf8-utils.h"
 
 #include <algorithm>
 #include <fstream>
@@ -13,7 +13,7 @@ extern "C" {
 #include <utf8proc.h>
 }
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
 std::string utf8_nfc_utf8proc(std::string_view s) {
@@ -343,4 +343,4 @@ std::string JapaneseOnnxG2p::text_to_ipa(std::string text_utf8) {
   return out;
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

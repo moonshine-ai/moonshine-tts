@@ -1,7 +1,7 @@
-#include "moonshine-g2p/chinese-onnx-g2p.h"
+#include "chinese-onnx-g2p.h"
 
-#include "moonshine-g2p/g2p-word-log.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "g2p-word-log.h"
+#include "utf8-utils.h"
 
 #include <utility>
 
@@ -9,7 +9,7 @@ extern "C" {
 #include <utf8proc.h>
 }
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
 std::string utf8_nfc_utf8proc(std::string_view s) {
@@ -64,4 +64,4 @@ std::string ChineseOnnxRuleG2p::text_to_ipa(std::string text, std::vector<G2pWor
   return impl_->text_to_ipa(std::move(text), per_word_log);
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

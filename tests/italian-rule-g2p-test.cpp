@@ -1,7 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "moonshine-g2p/lang-specific/italian.h"
+#include "italian.h"
 #include "rule-g2p-test-support.h"
 
 #include <chrono>
@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace r = moonshine_g2p::rule_g2p_test;
+namespace r = moonshine_tts::rule_g2p_test;
 
 namespace {
 
@@ -52,7 +52,7 @@ bool python_italian_import_ok() {
 }  // namespace
 
 TEST_CASE("italian: dialect_resolves_to_italian_rules") {
-  using moonshine_g2p::dialect_resolves_to_italian_rules;
+  using moonshine_tts::dialect_resolves_to_italian_rules;
   CHECK(dialect_resolves_to_italian_rules("it"));
   CHECK(dialect_resolves_to_italian_rules("it-IT"));
   CHECK(dialect_resolves_to_italian_rules("IT_it"));
@@ -64,7 +64,7 @@ TEST_CASE("italian: lowercase homograph overrides capitalized") {
   const auto p = make_temp_tsv(
       "Roma\twrong\n"
       "roma\tright\n");
-  moonshine_g2p::ItalianRuleG2p g(p);
+  moonshine_tts::ItalianRuleG2p g(p);
   CHECK(g.word_to_ipa("roma") == "right");
   std::filesystem::remove(p);
 }
@@ -72,7 +72,7 @@ TEST_CASE("italian: lowercase homograph overrides capitalized") {
 TEST_CASE("italian: lexicon stress not shifted by vocoder") {
   static const std::string kPri{"\xCB\x88"};
   const auto p = make_temp_tsv("testlex\tt\xC9\xAA\xCB\x88st\n");
-  moonshine_g2p::ItalianRuleG2p g(p);
+  moonshine_tts::ItalianRuleG2p g(p);
   const std::string ipa = g.word_to_ipa("testlex");
   CHECK(ipa.find(kPri) != std::string::npos);
   std::filesystem::remove(p);
@@ -83,7 +83,7 @@ TEST_CASE("italian: c'è matches Python when available") {
   if (!std::filesystem::is_regular_file(dict) || !python_italian_import_ok()) {
     return;
   }
-  moonshine_g2p::ItalianRuleG2p g(dict);
+  moonshine_tts::ItalianRuleG2p g(dict);
   const std::string py_ascii = python_ipa_one_line("c'è");
   CHECK(g.text_to_ipa("c'è") == py_ascii);
   const std::string py_typo = python_ipa_one_line("c\u2019\u00e8");
@@ -99,7 +99,7 @@ TEST_CASE("italian: wiki-text first 100 lines match Python when data and python3
       !python_italian_import_ok()) {
     return;
   }
-  moonshine_g2p::ItalianRuleG2p g(dict);
+  moonshine_tts::ItalianRuleG2p g(dict);
   const auto src = r::read_text_first_lines(wiki, kWikiParityLines);
   const std::vector<std::string> py = python_ipa_first_lines(wiki, static_cast<int>(src.size()));
   REQUIRE(py.size() == src.size());

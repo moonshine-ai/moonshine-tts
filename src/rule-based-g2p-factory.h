@@ -1,7 +1,7 @@
-#ifndef MOONSHINE_G2P_RULE_BASED_G2P_FACTORY_H
-#define MOONSHINE_G2P_RULE_BASED_G2P_FACTORY_H
+#ifndef MOONSHINE_TTS_RULE_BASED_G2P_FACTORY_H
+#define MOONSHINE_TTS_RULE_BASED_G2P_FACTORY_H
 
-#include "moonshine-g2p/moonshine-g2p-options.h"
+#include "moonshine-g2p-options.h"
 
 #include <memory>
 #include <optional>
@@ -9,7 +9,7 @@
 #include <string_view>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 class RuleBasedG2p;
 
@@ -48,6 +48,6 @@ std::optional<RuleBasedG2pInstance> create_rule_based_g2p(
 /// All static ``dialect_ids()`` from each rule engine, in factory resolution order (for discovery).
 std::vector<std::pair<RuleBasedG2pKind, std::vector<std::string>>> rule_based_g2p_dialect_catalog();
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_RULE_BASED_G2P_FACTORY_H
+#endif  // MOONSHINE_TTS_RULE_BASED_G2P_FACTORY_H

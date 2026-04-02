@@ -1,12 +1,13 @@
-#include "moonshine-g2p/lang-specific/english.h"
+#include "english.h"
 
-#include "moonshine-g2p/cmudict-tsv.h"
-#include "moonshine-g2p/g2p-word-log.h"
-#include "moonshine-g2p/lang-specific/english-hand-oov.h"
-#include "moonshine-g2p/lang-specific/english-numbers.h"
-#include "moonshine-g2p/onnx-g2p-models.h"
-#include "moonshine-g2p/text-normalize.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "builtin-cpp-data-root.h"
+#include "cmudict-tsv.h"
+#include "g2p-word-log.h"
+#include "english-hand-oov.h"
+#include "english-numbers.h"
+#include "onnx-g2p-models.h"
+#include "text-normalize.h"
+#include "utf8-utils.h"
 
 #include <cctype>
 #include <fstream>
@@ -17,10 +18,10 @@
 #include <stdexcept>
 #include <unordered_set>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 struct EnglishRuleG2p::Impl {
-  Ort::Env env{ORT_LOGGING_LEVEL_WARNING, "moonshine_g2p_en"};
+  Ort::Env env{ORT_LOGGING_LEVEL_WARNING, "moonshine_tts_en"};
   std::unique_ptr<CmudictTsv> dict;
   std::unordered_map<std::string, std::vector<std::string>> homograph_order;
   std::unique_ptr<OnnxHeteronymG2p> het;
@@ -246,7 +247,12 @@ std::filesystem::path resolve_english_dict_path(const std::filesystem::path& mod
   if (std::filesystem::is_regular_file(under)) {
     return under;
   }
+  const std::filesystem::path bundled =
+      builtin_cpp_data_root() / "en_us" / "dict_filtered_heteronyms.tsv";
+  if (std::filesystem::is_regular_file(bundled)) {
+    return bundled;
+  }
   return model_root.parent_path() / "models" / "en_us" / "dict_filtered_heteronyms.tsv";
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

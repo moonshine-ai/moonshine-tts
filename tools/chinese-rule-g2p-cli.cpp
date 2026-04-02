@@ -1,5 +1,5 @@
 // Simplified Chinese ONNX segmentation + UPOS + lexicon G2P (mirrors ``chinese_rule_g2p.py`` CLI).
-#include "moonshine-g2p/chinese-onnx-g2p.h"
+#include "chinese-onnx-g2p.h"
 
 #include <filesystem>
 #include <iostream>
@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
   }
 
   try {
-    moonshine_g2p::ChineseOnnxG2p g2p(std::move(model_dir), std::move(dict_path), false);
+    moonshine_tts::ChineseOnnxG2p g2p(std::move(model_dir), std::move(dict_path), false);
     std::cout << g2p.text_to_ipa(text) << '\n';
   } catch (const std::exception& e) {
     std::cerr << "error: " << e.what() << '\n';

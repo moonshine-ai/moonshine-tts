@@ -1,8 +1,8 @@
-#include "moonshine-g2p/utf8-utils.h"
+#include "utf8-utils.h"
 
 #include <unordered_set>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 bool utf8_decode_at(const std::string& s, size_t i, char32_t& out_cp, size_t& out_len) {
   const size_t n = s.size();
@@ -283,4 +283,4 @@ std::vector<std::string> dedupe_dialect_ids_preserve_first(std::vector<std::stri
   return out;
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

@@ -1,5 +1,5 @@
-#ifndef MOONSHINE_G2P_TESTS_RULE_G2P_TEST_SUPPORT_H
-#define MOONSHINE_G2P_TESTS_RULE_G2P_TEST_SUPPORT_H
+#ifndef MOONSHINE_TTS_TESTS_RULE_G2P_TEST_SUPPORT_H
+#define MOONSHINE_TTS_TESTS_RULE_G2P_TEST_SUPPORT_H
 
 /// Shared helpers for rule-G2P parity tests (Python reference scripts, wiki samples).
 
@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-namespace moonshine_g2p::rule_g2p_test {
+namespace moonshine_tts::rule_g2p_test {
 
 inline std::filesystem::path repo_root_from_tests_cpp(const char* tests_cpp_file) {
   return std::filesystem::path(tests_cpp_file).parent_path().parent_path().parent_path();
@@ -100,6 +100,6 @@ inline std::vector<std::string> read_text_first_lines(const std::filesystem::pat
   return src;
 }
 
-}  // namespace moonshine_g2p::rule_g2p_test
+}  // namespace moonshine_tts::rule_g2p_test
 
-#endif  // MOONSHINE_G2P_TESTS_RULE_G2P_TEST_SUPPORT_H
+#endif  // MOONSHINE_TTS_TESTS_RULE_G2P_TEST_SUPPORT_H

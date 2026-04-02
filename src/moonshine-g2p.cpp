@@ -1,28 +1,28 @@
-#include "moonshine-g2p/moonshine-g2p.h"
-#include "moonshine-g2p/rule-based-g2p-factory.h"
-#include "moonshine-g2p/rule-based-g2p.h"
-#include "moonshine-g2p/lang-specific/dutch.h"
-#include "moonshine-g2p/lang-specific/english.h"
-#include "moonshine-g2p/lang-specific/french.h"
-#include "moonshine-g2p/lang-specific/german.h"
-#include "moonshine-g2p/lang-specific/chinese.h"
-#include "moonshine-g2p/lang-specific/korean.h"
-#include "moonshine-g2p/lang-specific/vietnamese.h"
-#include "moonshine-g2p/lang-specific/japanese.h"
-#include "moonshine-g2p/lang-specific/arabic.h"
-#include "moonshine-g2p/lang-specific/italian.h"
-#include "moonshine-g2p/lang-specific/portuguese.h"
-#include "moonshine-g2p/lang-specific/russian.h"
-#include "moonshine-g2p/lang-specific/spanish.h"
-#include "moonshine-g2p/lang-specific/turkish.h"
-#include "moonshine-g2p/lang-specific/ukrainian.h"
-#include "moonshine-g2p/lang-specific/hindi.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "moonshine-g2p.h"
+#include "rule-based-g2p-factory.h"
+#include "rule-based-g2p.h"
+#include "dutch.h"
+#include "english.h"
+#include "french.h"
+#include "german.h"
+#include "chinese.h"
+#include "korean.h"
+#include "vietnamese.h"
+#include "japanese.h"
+#include "arabic.h"
+#include "italian.h"
+#include "portuguese.h"
+#include "russian.h"
+#include "spanish.h"
+#include "turkish.h"
+#include "ukrainian.h"
+#include "hindi.h"
+#include "utf8-utils.h"
 
 #include <cctype>
 #include <stdexcept>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 namespace {
 
@@ -167,4 +167,4 @@ std::string MoonshineG2P::text_to_ipa(std::string_view text, std::vector<G2pWord
   throw std::logic_error("MoonshineG2P: no backend initialized");
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

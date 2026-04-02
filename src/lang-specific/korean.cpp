@@ -1,7 +1,7 @@
-#include "moonshine-g2p/lang-specific/korean.h"
-#include "moonshine-g2p/lang-specific/korean-numbers.h"
-#include "moonshine-g2p/g2p-word-log.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "korean.h"
+#include "korean-numbers.h"
+#include "g2p-word-log.h"
+#include "utf8-utils.h"
 
 #include <cctype>
 #include <cstdlib>
@@ -17,7 +17,7 @@ extern "C" {
 #include <utf8proc.h>
 }
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
 constexpr char32_t kHangulBase = 0xAC00;
@@ -678,4 +678,4 @@ std::filesystem::path resolve_korean_dict_path(const std::filesystem::path& mode
   return model_root / "ko" / "dict.tsv";
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

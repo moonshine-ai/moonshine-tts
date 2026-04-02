@@ -1,12 +1,12 @@
-#include "moonshine-g2p/json-config.h"
+#include "json-config.h"
 
-#include "moonshine-g2p/constants.h"
+#include "constants.h"
 
 #include <fstream>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 namespace {
 
@@ -146,4 +146,4 @@ HeteronymOnnxTables load_heteronym_tables(const std::filesystem::path& model_onn
   return t;
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

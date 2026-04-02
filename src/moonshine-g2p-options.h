@@ -1,14 +1,16 @@
-#ifndef MOONSHINE_G2P_MOONSHINE_G2P_OPTIONS_H
-#define MOONSHINE_G2P_MOONSHINE_G2P_OPTIONS_H
+#ifndef MOONSHINE_TTS_MOONSHINE_TTS_OPTIONS_H
+#define MOONSHINE_TTS_MOONSHINE_TTS_OPTIONS_H
 
 #include <filesystem>
 #include <optional>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 /// Options for constructing ``MoonshineG2P`` (rule-engine paths and toggles; optional heteronym/OOV
 /// ONNX overrides for English).
 struct MoonshineG2POptions {
+  /// Default ``models`` matches training-export layout; ``moonshine-tts-g2p`` sets
+  /// ``builtin_cpp_data_root()`` when ``--model-root`` is omitted.
   std::filesystem::path model_root = "models";
   bool use_cuda = false;
   /// Used when the dialect resolves to rule-based Spanish G2P.
@@ -82,6 +84,6 @@ struct MoonshineG2POptions {
   std::optional<std::filesystem::path> oov_onnx_override;
 };
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_MOONSHINE_G2P_OPTIONS_H
+#endif  // MOONSHINE_TTS_MOONSHINE_TTS_OPTIONS_H

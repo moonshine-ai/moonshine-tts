@@ -1,7 +1,7 @@
 // CLI: Moonshine G2P + Kokoro or Piper ONNX → WAV.
-#include "moonshine-g2p/moonshine-tts.h"
-#include "moonshine-g2p/piper-tts.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "moonshine-tts.h"
+#include "piper-tts.h"
+#include "utf8-utils.h"
 
 #include <cstdlib>
 #include <filesystem>
@@ -36,7 +36,7 @@ std::optional<std::string> infer_lang_from_text_utf8(const std::string& text) {
   for (size_t i = 0; i < text.size();) {
     char32_t cp = 0;
     size_t adv = 0;
-    if (!moonshine_g2p::utf8_decode_at(text, i, cp, adv)) {
+    if (!moonshine_tts::utf8_decode_at(text, i, cp, adv)) {
       break;
     }
     i += adv;
@@ -59,13 +59,13 @@ std::optional<std::string> infer_lang_from_text_utf8(const std::string& text) {
 }  // namespace
 
 int main(int argc, char** argv) {
-  using moonshine_g2p::kokoro_tts_lang_supported;
-  using moonshine_g2p::MoonshineG2POptions;
-  using moonshine_g2p::MoonshineTTS;
-  using moonshine_g2p::MoonshineTTSOptions;
-  using moonshine_g2p::PiperTTS;
-  using moonshine_g2p::PiperTTSOptions;
-  using moonshine_g2p::write_wav_mono_pcm16;
+  using moonshine_tts::kokoro_tts_lang_supported;
+  using moonshine_tts::MoonshineG2POptions;
+  using moonshine_tts::MoonshineTTS;
+  using moonshine_tts::MoonshineTTSOptions;
+  using moonshine_tts::PiperTTS;
+  using moonshine_tts::PiperTTSOptions;
+  using moonshine_tts::write_wav_mono_pcm16;
 
   std::string engine = "kokoro";
   std::filesystem::path model_root;
@@ -118,6 +118,12 @@ int main(int argc, char** argv) {
     return 2;
   }
 
+  if (engine == "kokoro" && kokoro_dir.empty() && model_root.empty()) {
+    if (std::filesystem::path p = moonshine_tts::preferred_parent_models_kokoro_dir(); !p.empty()) {
+      kokoro_dir = std::move(p);
+    }
+  }
+
   std::string text = text_flag;
   if (text.empty()) {
     for (const auto& p : positionals) {
@@ -134,7 +140,7 @@ int main(int argc, char** argv) {
   if (!lang_from_cli) {
     if (const auto inferred = infer_lang_from_text_utf8(text)) {
       lang = *inferred;
-      std::cerr << "moonshine_tts: inferred --lang " << lang << " from input text "
+      std::cerr << "moonshine-tts: inferred --lang " << lang << " from input text "
                    "(set --lang explicitly to override).\n";
     }
   }

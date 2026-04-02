@@ -1,7 +1,7 @@
-#ifndef MOONSHINE_G2P_ONNX_G2P_MODELS_H
-#define MOONSHINE_G2P_ONNX_G2P_MODELS_H
+#ifndef MOONSHINE_TTS_ONNX_G2P_MODELS_H
+#define MOONSHINE_TTS_ONNX_G2P_MODELS_H
 
-#include "moonshine-g2p/json-config.h"
+#include "json-config.h"
 
 #include <filesystem>
 #include <memory>
@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 class OnnxOovG2p {
  public:
@@ -39,6 +39,6 @@ class OnnxHeteronymG2p {
   Ort::MemoryInfo mem_{Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault)};
 };
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_ONNX_G2P_MODELS_H
+#endif  // MOONSHINE_TTS_ONNX_G2P_MODELS_H

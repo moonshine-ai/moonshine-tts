@@ -1,9 +1,9 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "moonshine-g2p/text-normalize.h"
+#include "text-normalize.h"
 
-using namespace moonshine_g2p;
+using namespace moonshine_tts;
 
 TEST_CASE("split_text_to_words") {
   const auto w = split_text_to_words("  a  b\tc\n");

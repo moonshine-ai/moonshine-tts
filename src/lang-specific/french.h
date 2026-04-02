@@ -1,7 +1,7 @@
-#ifndef MOONSHINE_G2P_LANG_SPECIFIC_FRENCH_H
-#define MOONSHINE_G2P_LANG_SPECIFIC_FRENCH_H
+#ifndef MOONSHINE_TTS_LANG_SPECIFIC_FRENCH_H
+#define MOONSHINE_TTS_LANG_SPECIFIC_FRENCH_H
 
-#include "moonshine-g2p/rule-based-g2p.h"
+#include "rule-based-g2p.h"
 
 #include <filesystem>
 #include <string>
@@ -9,7 +9,7 @@
 #include <unordered_set>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 struct G2pWordLog;
 
@@ -57,6 +57,6 @@ class FrenchRuleG2p : public RuleBasedG2p {
 /// True for ``fr``, ``fr-FR``, ``fr_fr``, ``french`` (case-insensitive).
 bool dialect_resolves_to_french_rules(std::string_view dialect_id);
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_LANG_SPECIFIC_FRENCH_H
+#endif  // MOONSHINE_TTS_LANG_SPECIFIC_FRENCH_H

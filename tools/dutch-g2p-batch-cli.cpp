@@ -1,6 +1,6 @@
 // Dutch rule + lexicon G2P (no ONNX). Batch mode: one input line -> one IPA line on stdout.
 // For parity checks vs Python without spawning one process per phrase.
-#include "moonshine-g2p/lang-specific/dutch.h"
+#include "dutch.h"
 
 #include <cctype>
 #include <filesystem>
@@ -43,7 +43,7 @@ std::string read_all_stdin() {
 
 int main(int argc, char** argv) {
   std::filesystem::path dict_path = std::filesystem::path("data") / "nl" / "dict.tsv";
-  moonshine_g2p::DutchRuleG2p::Options opt;
+  moonshine_tts::DutchRuleG2p::Options opt;
   bool whole_stdin = false;
   std::vector<std::string> parts;
 
@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
   }
 
   try {
-    moonshine_g2p::DutchRuleG2p g2p(dict_path, opt);
+    moonshine_tts::DutchRuleG2p g2p(dict_path, opt);
 
     if (whole_stdin) {
       const std::string text = read_all_stdin();

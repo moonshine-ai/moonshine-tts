@@ -1,6 +1,6 @@
 // French rule + lexicon G2P (no ONNX). Batch mode: one input line -> one IPA line on stdout.
-// For fast parity checks vs Python without spawning moonshine_g2p per phrase.
-#include "moonshine-g2p/lang-specific/french.h"
+// For fast parity checks vs Python without spawning moonshine-tts-g2p per phrase.
+#include "french.h"
 
 #include <cctype>
 #include <filesystem>
@@ -46,7 +46,7 @@ std::string read_all_stdin() {
 int main(int argc, char** argv) {
   std::filesystem::path dict_path = std::filesystem::path("data") / "fr" / "dict.tsv";
   std::filesystem::path csv_dir = std::filesystem::path("data") / "fr";
-  moonshine_g2p::FrenchRuleG2p::Options opt;
+  moonshine_tts::FrenchRuleG2p::Options opt;
   bool whole_stdin = false;
   std::vector<std::string> parts;
 
@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
   }
 
   try {
-    moonshine_g2p::FrenchRuleG2p g2p(dict_path, csv_dir, opt);
+    moonshine_tts::FrenchRuleG2p g2p(dict_path, csv_dir, opt);
 
     if (whole_stdin) {
       const std::string text = read_all_stdin();

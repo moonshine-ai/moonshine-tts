@@ -1,10 +1,10 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "moonshine-g2p/lang-specific/korean-numbers.h"
-#include "moonshine-g2p/lang-specific/korean.h"
-#ifdef MOONSHINE_G2P_WITH_MOONSHINE_G2P_CLASS
-#include "moonshine-g2p/moonshine-g2p.h"
+#include "korean-numbers.h"
+#include "korean.h"
+#ifdef MOONSHINE_TTS_WITH_G2P_CLASS
+#include "moonshine-g2p.h"
 #endif
 
 #include <filesystem>
@@ -23,7 +23,7 @@ std::filesystem::path ko_dict_path() {
 }  // namespace
 
 TEST_CASE("korean: dialect_resolves_to_korean_rules") {
-  using moonshine_g2p::dialect_resolves_to_korean_rules;
+  using moonshine_tts::dialect_resolves_to_korean_rules;
   CHECK(dialect_resolves_to_korean_rules("ko"));
   CHECK(dialect_resolves_to_korean_rules("ko-KR"));
   CHECK(dialect_resolves_to_korean_rules("KO_kr"));
@@ -32,7 +32,7 @@ TEST_CASE("korean: dialect_resolves_to_korean_rules") {
 }
 
 TEST_CASE("korean: normalize strips vowel diacritics keeps tense unreleased") {
-  using moonshine_g2p::KoreanRuleG2p;
+  using moonshine_tts::KoreanRuleG2p;
   // ha̠ + k̚ + k͈jo — NFD has combining on first vowel; keep ̚ (U+031A) and ͈ (U+0348).
   const std::string in =
       "ha"
@@ -47,7 +47,7 @@ TEST_CASE("korean: normalize strips vowel diacritics keeps tense unreleased") {
 }
 
 TEST_CASE("korean: int_to_sino_korean_hangul") {
-  using moonshine_g2p::int_to_sino_korean_hangul;
+  using moonshine_tts::int_to_sino_korean_hangul;
   CHECK(int_to_sino_korean_hangul(0) == "영");
   CHECK(int_to_sino_korean_hangul(10) == "십");
   CHECK(int_to_sino_korean_hangul(42) == "사십이");
@@ -59,7 +59,7 @@ TEST_CASE("korean: int_to_sino_korean_hangul") {
 }
 
 TEST_CASE("korean: korean_reading_fragments_from_ascii_numeral_token") {
-  using moonshine_g2p::korean_reading_fragments_from_ascii_numeral_token;
+  using moonshine_tts::korean_reading_fragments_from_ascii_numeral_token;
   const auto a = korean_reading_fragments_from_ascii_numeral_token("1,234");
   REQUIRE(a.has_value());
   CHECK((*a).size() == 1);
@@ -86,30 +86,30 @@ TEST_CASE("korean: G2P examples with data/ko/dict.tsv") {
   if (!std::filesystem::is_regular_file(dict)) {
     return;
   }
-  moonshine_g2p::KoreanRuleG2p g(dict);
+  moonshine_tts::KoreanRuleG2p g(dict);
   CHECK(g.text_to_ipa("닭이") == "dal.ki");
   CHECK(g.text_to_ipa("닫는") == "dan.nɯn");
   CHECK(g.text_to_ipa("007") == "jʌŋ.jʌŋ.tɕil");
   CHECK(g.text_to_ipa("3.14") == "sam.tɕʌ.mil.sa");
-  moonshine_g2p::KoreanRuleG2p::Options no_dig;
+  moonshine_tts::KoreanRuleG2p::Options no_dig;
   no_dig.expand_cardinal_digits = false;
-  moonshine_g2p::KoreanRuleG2p g2(dict, no_dig);
+  moonshine_tts::KoreanRuleG2p g2(dict, no_dig);
   CHECK(g2.text_to_ipa("42") == "");
 }
 
-#ifdef MOONSHINE_G2P_WITH_MOONSHINE_G2P_CLASS
+#ifdef MOONSHINE_TTS_WITH_G2P_CLASS
 TEST_CASE("korean: MoonshineG2P ko uses KoreanRuleG2p") {
   const auto dict = ko_dict_path();
   if (!std::filesystem::is_regular_file(dict)) {
     return;
   }
-  moonshine_g2p::MoonshineG2POptions opt;
+  moonshine_tts::MoonshineG2POptions opt;
   opt.korean_dict_path = dict;
-  moonshine_g2p::MoonshineG2P g("ko", opt);
+  moonshine_tts::MoonshineG2P g("ko", opt);
   CHECK(g.uses_korean_rules());
   CHECK_FALSE(g.uses_onnx());
   CHECK(g.dialect_id() == "ko-KR");
-  moonshine_g2p::KoreanRuleG2p direct(dict);
+  moonshine_tts::KoreanRuleG2p direct(dict);
   const std::string w = "닭이";
   CHECK(g.text_to_ipa(w) == direct.text_to_ipa(w));
 }

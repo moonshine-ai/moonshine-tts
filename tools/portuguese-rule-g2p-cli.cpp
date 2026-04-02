@@ -1,5 +1,5 @@
 // Stand-alone Portuguese rule + lexicon G2P (no ONNX). Mirrors ``portuguese_rule_g2p.py`` CLI subset.
-#include "moonshine-g2p/lang-specific/portuguese.h"
+#include "portuguese.h"
 
 #include <filesystem>
 #include <iostream>
@@ -27,7 +27,7 @@ std::string read_all_stdin() {
 int main(int argc, char** argv) {
   std::filesystem::path dict_path = std::filesystem::path("data") / "pt_br" / "dict.tsv";
   bool is_portugal = false;
-  moonshine_g2p::PortugueseRuleG2p::Options opt;
+  moonshine_tts::PortugueseRuleG2p::Options opt;
   bool force_stdin = false;
   std::vector<std::string> parts;
 
@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
   }
 
   try {
-    moonshine_g2p::PortugueseRuleG2p g2p(dict_path, is_portugal, opt);
+    moonshine_tts::PortugueseRuleG2p g2p(dict_path, is_portugal, opt);
     std::cout << g2p.text_to_ipa(text) << '\n';
   } catch (const std::exception& e) {
     std::cerr << "error: " << e.what() << '\n';

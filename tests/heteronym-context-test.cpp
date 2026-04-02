@@ -1,10 +1,10 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "moonshine-g2p/heteronym-context.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "heteronym-context.h"
+#include "utf8-utils.h"
 
-using namespace moonshine_g2p;
+using namespace moonshine_tts;
 
 TEST_CASE("heteronym_centered_context_window_cells short pad") {
   const auto cells = utf8_split_codepoints("ab");

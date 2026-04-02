@@ -1,10 +1,10 @@
-#ifndef MOONSHINE_G2P_G2P_WORD_LOG_H
-#define MOONSHINE_G2P_G2P_WORD_LOG_H
+#ifndef MOONSHINE_TTS_G2P_WORD_LOG_H
+#define MOONSHINE_TTS_G2P_WORD_LOG_H
 
 #include <string>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 // How a surface word was converted to IPA in ``MoonshineG2P`` / ``EnglishRuleG2p`` pipelines.
 enum class G2pWordPath {
@@ -34,6 +34,6 @@ struct G2pWordLog {
 /// One-line human-readable summary (for stderr logging).
 std::string format_g2p_word_log_line(const G2pWordLog& entry);
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_G2P_WORD_LOG_H
+#endif  // MOONSHINE_TTS_G2P_WORD_LOG_H

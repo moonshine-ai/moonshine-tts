@@ -1,6 +1,6 @@
 // Russian cardinal expansion (russian_numbers.py). #include from russian.cpp (same TU).
 
-#include "moonshine-g2p/utf8-utils.h"
+#include "utf8-utils.h"
 
 #include <regex>
 #include <stdexcept>
@@ -216,8 +216,8 @@ std::string expand_russian_digit_tokens_in_text(std::string text) {
     const size_t g1e = g1s + m.str(1).size();
     const size_t g2s = static_cast<size_t>(m.position(2));
     const size_t g2e = g2s + m.str(2).size();
-    if (moonshine_g2p::digit_ascii_span_expandable_python_w(text, g1s, g1e) &&
-        moonshine_g2p::digit_ascii_span_expandable_python_w(text, g2s, g2e)) {
+    if (moonshine_tts::digit_ascii_span_expandable_python_w(text, g1s, g1e) &&
+        moonshine_tts::digit_ascii_span_expandable_python_w(text, g2s, g2e)) {
       out += expand_cardinal_digits_to_russian_words(m.str(1));
       out += " - ";
       out += expand_cardinal_digits_to_russian_words(m.str(2));
@@ -236,7 +236,7 @@ std::string expand_russian_digit_tokens_in_text(std::string text) {
     out.append(text, pos, static_cast<size_t>(m.position() - static_cast<long>(pos)));
     const size_t gs = static_cast<size_t>(m.position());
     const size_t ge = gs + m.str().size();
-    if (moonshine_g2p::digit_ascii_span_expandable_python_w(text, gs, ge)) {
+    if (moonshine_tts::digit_ascii_span_expandable_python_w(text, gs, ge)) {
       out += expand_cardinal_digits_to_russian_words(m.str());
     } else {
       out += m.str();

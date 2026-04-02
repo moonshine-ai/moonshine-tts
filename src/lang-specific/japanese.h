@@ -1,7 +1,7 @@
-#ifndef MOONSHINE_G2P_LANG_SPECIFIC_JAPANESE_H
-#define MOONSHINE_G2P_LANG_SPECIFIC_JAPANESE_H
+#ifndef MOONSHINE_TTS_LANG_SPECIFIC_JAPANESE_H
+#define MOONSHINE_TTS_LANG_SPECIFIC_JAPANESE_H
 
-#include "moonshine-g2p/rule-based-g2p.h"
+#include "rule-based-g2p.h"
 
 #include <filesystem>
 #include <memory>
@@ -9,7 +9,7 @@
 #include <string_view>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 struct G2pWordLog;
 
@@ -48,6 +48,6 @@ std::filesystem::path resolve_japanese_dict_path(const std::filesystem::path& mo
 /// Directory containing ``model.onnx`` for char-LUW UPOS (default under ``data/ja/``).
 std::filesystem::path resolve_japanese_onnx_model_dir(const std::filesystem::path& model_root);
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
 #endif

@@ -1,10 +1,10 @@
-#include "moonshine-g2p/lang-specific/french.h"
-#include "moonshine-g2p/lang-specific/french-compound-map.h"
+#include "french.h"
+#include "french-compound-map.h"
 
-#include "moonshine-g2p/lang-specific/french-internal.h"
-#include "moonshine-g2p/g2p-word-log.h"
-#include "moonshine-g2p/ipa-symbols.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "french-internal.h"
+#include "g2p-word-log.h"
+#include "ipa-symbols.h"
+#include "utf8-utils.h"
 
 #include <algorithm>
 #include <array>
@@ -17,13 +17,13 @@
 #include <utility>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
 using ipa::kPrimaryStressUtf8;
 using ipa::kSecondaryStressUtf8;
-using moonshine_g2p::trim_ascii_ws_copy;
-using moonshine_g2p::utf8_decode_at;
+using moonshine_tts::trim_ascii_ws_copy;
+using moonshine_tts::utf8_decode_at;
 
 char32_t french_tolower_cp(char32_t c) {
   switch (c) {
@@ -1266,4 +1266,4 @@ std::vector<std::string> FrenchRuleG2p::dialect_ids() {
   return dedupe_dialect_ids_preserve_first({"fr", "fr-FR", "fr_fr", "french"});
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

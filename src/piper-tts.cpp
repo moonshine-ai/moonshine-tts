@@ -1,8 +1,8 @@
-#include "moonshine-g2p/piper-tts.h"
+#include "piper-tts.h"
 
-#include "moonshine-g2p/ipa-postprocess.h"
-#include "moonshine-g2p/moonshine-g2p.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "ipa-postprocess.h"
+#include "moonshine-g2p.h"
+#include "utf8-utils.h"
 
 #include <onnxruntime_cxx_api.h>
 
@@ -21,7 +21,7 @@ extern "C" {
 #include <unordered_map>
 #include <unordered_set>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 std::filesystem::path builtin_piper_voices_dir(std::string_view data_subdir) {
   return std::filesystem::path(__FILE__).parent_path().parent_path() / "data" /
@@ -535,4 +535,4 @@ std::vector<float> PiperTTS::synthesize_phoneme_ids(const std::vector<int64_t>& 
   return impl_->synthesize_phoneme_ids(phoneme_ids);
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

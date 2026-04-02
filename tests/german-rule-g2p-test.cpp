@@ -1,7 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "moonshine-g2p/lang-specific/german.h"
+#include "german.h"
 #include "rule-g2p-test-support.h"
 
 #include <chrono>
@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace r = moonshine_g2p::rule_g2p_test;
+namespace r = moonshine_tts::rule_g2p_test;
 
 namespace {
 
@@ -37,30 +37,30 @@ TEST_CASE("german: lowercase homograph overrides capitalized") {
   const auto p = make_temp_tsv(
       "Die\tdaɪ\n"
       "die\tdiː\n");
-  moonshine_g2p::GermanRuleG2p g(p);
+  moonshine_tts::GermanRuleG2p g(p);
   CHECK(g.word_to_ipa("die") == "diː");
   std::filesystem::remove(p);
 }
 
 TEST_CASE("german: lexicon entry with syllable-initial stress gets vocoder shift") {
   const auto p = make_temp_tsv("komme\tˈkɔmə\n");
-  moonshine_g2p::GermanRuleG2p g(p);
+  moonshine_tts::GermanRuleG2p g(p);
   CHECK(g.word_to_ipa("komme") == "kˈɔmə");
   std::filesystem::remove(p);
 }
 
 TEST_CASE("german: syllable-initial stress preserved when vocoder_stress false") {
   const auto p = make_temp_tsv("komme\tˈkɔmə\n");
-  moonshine_g2p::GermanRuleG2p::Options o;
+  moonshine_tts::GermanRuleG2p::Options o;
   o.vocoder_stress = false;
-  moonshine_g2p::GermanRuleG2p g(p, o);
+  moonshine_tts::GermanRuleG2p g(p, o);
   CHECK(g.word_to_ipa("komme") == "ˈkɔmə");
   std::filesystem::remove(p);
 }
 
 TEST_CASE("german: OOV rules machen") {
   const auto p = make_temp_tsv("x\ty\n");  // dummy so file parses
-  moonshine_g2p::GermanRuleG2p g(p);
+  moonshine_tts::GermanRuleG2p g(p);
   const std::string ipa = g.word_to_ipa("machen");
   static const std::string kPri{"\xCB\x88"};
   CHECK(ipa.find(kPri) != std::string::npos);
@@ -71,7 +71,7 @@ TEST_CASE("german: OOV rules machen") {
 }
 
 TEST_CASE("german: normalize_ipa_stress_for_vocoder idempotent") {
-  using moonshine_g2p::GermanRuleG2p;
+  using moonshine_tts::GermanRuleG2p;
   std::string a = GermanRuleG2p::normalize_ipa_stress_for_vocoder("ˈkɔmə");
   std::string b = GermanRuleG2p::normalize_ipa_stress_for_vocoder(a);
   CHECK(a == b);
@@ -79,7 +79,7 @@ TEST_CASE("german: normalize_ipa_stress_for_vocoder idempotent") {
 }
 
 TEST_CASE("german: dialect_resolves_to_german_rules") {
-  using moonshine_g2p::dialect_resolves_to_german_rules;
+  using moonshine_tts::dialect_resolves_to_german_rules;
   CHECK(dialect_resolves_to_german_rules("de"));
   CHECK(dialect_resolves_to_german_rules("de-DE"));
   CHECK(dialect_resolves_to_german_rules("DE_de"));
@@ -89,7 +89,7 @@ TEST_CASE("german: dialect_resolves_to_german_rules") {
 
 TEST_CASE("german: text token preserves comma") {
   const auto p = make_temp_tsv("Hallo\thaˈloː\n");
-  moonshine_g2p::GermanRuleG2p g(p);
+  moonshine_tts::GermanRuleG2p g(p);
   const std::string t = g.text_to_ipa("Hallo, du");
   CHECK(t.find(',') != std::string::npos);
   std::filesystem::remove(p);
@@ -112,7 +112,7 @@ TEST_CASE("german: Im Jahr 1891 matches Python when data and python3 exist") {
   std::error_code ec;
   std::filesystem::remove(tmp, ec);
   REQUIRE(py.size() == 1);
-  moonshine_g2p::GermanRuleG2p g(dict);
+  moonshine_tts::GermanRuleG2p g(dict);
   CHECK(g.text_to_ipa("Im Jahr 1891") == py[0]);
 }
 
@@ -125,7 +125,7 @@ TEST_CASE("german: wiki-text first 100 lines match Python when data and python3 
       !python_german_import_ok()) {
     return;
   }
-  moonshine_g2p::GermanRuleG2p g(dict);
+  moonshine_tts::GermanRuleG2p g(dict);
   const auto src = r::read_text_first_lines(wiki, kWikiParityLines);
   const std::vector<std::string> py = python_ipa_first_lines(wiki, static_cast<int>(src.size()));
   REQUIRE(py.size() == src.size());

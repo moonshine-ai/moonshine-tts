@@ -1,5 +1,5 @@
-#ifndef MOONSHINE_G2P_JSON_CONFIG_H
-#define MOONSHINE_G2P_JSON_CONFIG_H
+#ifndef MOONSHINE_TTS_JSON_CONFIG_H
+#define MOONSHINE_TTS_JSON_CONFIG_H
 
 #include <cstdint>
 #include <filesystem>
@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 struct OovOnnxTables {
   std::unordered_map<std::string, int64_t> char_stoi;
@@ -41,6 +41,6 @@ OovOnnxTables load_oov_tables(const std::filesystem::path& model_onnx_path);
 
 HeteronymOnnxTables load_heteronym_tables(const std::filesystem::path& model_onnx_path);
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_JSON_CONFIG_H
+#endif  // MOONSHINE_TTS_JSON_CONFIG_H

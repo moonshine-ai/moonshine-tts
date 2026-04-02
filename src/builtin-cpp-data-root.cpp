@@ -1,6 +1,6 @@
-#include "moonshine-g2p/builtin-cpp-data-root.h"
+#include "builtin-cpp-data-root.h"
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 std::filesystem::path builtin_cpp_data_root() {
   const std::filesystem::path here = std::filesystem::path(__FILE__).parent_path();
@@ -8,4 +8,4 @@ std::filesystem::path builtin_cpp_data_root() {
   return cpp_dir / "data";
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

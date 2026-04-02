@@ -1,11 +1,11 @@
-#include "moonshine-g2p/lang-specific/english-numbers.h"
+#include "english-numbers.h"
 
 #include <algorithm>
 #include <cctype>
 #include <string>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
 const char* kUnits[] = {"ˈzɪroʊ", "wˈʌn", "tˈu", "θɹˈi", "fˈɔɹ", "fˈaɪv",
@@ -208,4 +208,4 @@ std::optional<std::string> english_number_token_ipa(std::string_view token) {
   return integer_decimal_string_ipa(std::move(t));
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

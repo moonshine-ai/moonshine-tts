@@ -1,7 +1,7 @@
 // Prints Piper-ready IPA (NFC + replacements + optional inventory coercion) for parity tests.
 // Usage: piper-ipa-normalize-cli --lang en_us --phoneme-json PATH [--no-coerce] -- IPA_UTF8
 
-#include "moonshine-g2p/ipa-postprocess.h"
+#include "ipa-postprocess.h"
 
 #include <fstream>
 #include <iostream>
@@ -86,7 +86,7 @@ int main(int argc, char** argv) {
     ipa.push_back(' ');
     ipa += argv[i];
   }
-  const std::string out = moonshine_g2p::ipa_to_piper_ready(ipa, lang, keys, coerce);
+  const std::string out = moonshine_tts::ipa_to_piper_ready(ipa, lang, keys, coerce);
   std::cout << out;
   return 0;
 }

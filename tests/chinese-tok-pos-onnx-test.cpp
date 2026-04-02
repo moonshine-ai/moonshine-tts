@@ -1,17 +1,17 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "moonshine-g2p/chinese-tok-pos-onnx.h"
+#include "chinese-tok-pos-onnx.h"
 #include "rule-g2p-test-support.h"
 
 #include <chrono>
 #include <fstream>
 
-namespace r = moonshine_g2p::rule_g2p_test;
+namespace r = moonshine_tts::rule_g2p_test;
 
 TEST_CASE("chinese tok pos: single sentence matches Python reference") {
   const auto repo = r::repo_root_from_tests_cpp(__FILE__);
-  const auto model = moonshine_g2p::default_chinese_tok_pos_model_dir(repo);
+  const auto model = moonshine_tts::default_chinese_tok_pos_model_dir(repo);
   if (!std::filesystem::is_regular_file(model / "model.onnx")) {
     return;
   }
@@ -27,21 +27,21 @@ TEST_CASE("chinese tok pos: single sentence matches Python reference") {
   std::error_code ec;
   std::filesystem::remove(tmp, ec);
   REQUIRE(py.size() == 1);
-  moonshine_g2p::ChineseTokPosOnnx pipe(model, false);
+  moonshine_tts::ChineseTokPosOnnx pipe(model, false);
   const auto pairs = pipe.annotate("上海是一座城市。");
-  CHECK(moonshine_g2p::ChineseTokPosOnnx::format_annotated_line(pairs) == py[0]);
+  CHECK(moonshine_tts::ChineseTokPosOnnx::format_annotated_line(pairs) == py[0]);
 }
 
 TEST_CASE("chinese tok pos: first 100 wiki lines match Python when assets exist") {
   constexpr std::size_t kWikiLines = 100;
   const auto repo = r::repo_root_from_tests_cpp(__FILE__);
-  const auto model = moonshine_g2p::default_chinese_tok_pos_model_dir(repo);
+  const auto model = moonshine_tts::default_chinese_tok_pos_model_dir(repo);
   const auto wiki = repo / "data" / "zh_hans" / "wiki-text.txt";
   if (!std::filesystem::is_regular_file(model / "model.onnx") ||
       !std::filesystem::is_regular_file(wiki)) {
     return;
   }
-  moonshine_g2p::ChineseTokPosOnnx pipe(model, false);
+  moonshine_tts::ChineseTokPosOnnx pipe(model, false);
   const auto src = r::read_text_first_lines(wiki, kWikiLines);
   std::vector<std::string> tokenizable;
   for (const std::string& line : src) {
@@ -72,6 +72,6 @@ TEST_CASE("chinese tok pos: first 100 wiki lines match Python when assets exist"
   for (std::size_t i = 0; i < tokenizable.size(); ++i) {
     INFO("wiki filtered index " << (i + 1));
     const auto pairs = pipe.annotate(tokenizable[i]);
-    CHECK(moonshine_g2p::ChineseTokPosOnnx::format_annotated_line(pairs) == py[i]);
+    CHECK(moonshine_tts::ChineseTokPosOnnx::format_annotated_line(pairs) == py[i]);
   }
 }

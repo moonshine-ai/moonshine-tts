@@ -1,8 +1,8 @@
-#ifndef MOONSHINE_G2P_LANG_SPECIFIC_ARABIC_H
-#define MOONSHINE_G2P_LANG_SPECIFIC_ARABIC_H
+#ifndef MOONSHINE_TTS_LANG_SPECIFIC_ARABIC_H
+#define MOONSHINE_TTS_LANG_SPECIFIC_ARABIC_H
 
-#include "moonshine-g2p/arabic-diac-onnx.h"
-#include "moonshine-g2p/rule-based-g2p.h"
+#include "arabic-diac-onnx.h"
+#include "rule-based-g2p.h"
 
 #include <filesystem>
 #include <memory>
@@ -11,7 +11,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 struct G2pWordLog;
 
@@ -43,6 +43,6 @@ bool dialect_resolves_to_arabic_rules(std::string_view dialect_id);
 std::filesystem::path resolve_arabic_dict_path(const std::filesystem::path& model_root);
 std::filesystem::path resolve_arabic_onnx_model_dir(const std::filesystem::path& model_root);
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
 #endif

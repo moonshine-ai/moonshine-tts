@@ -1,6 +1,6 @@
-#include "moonshine-g2p/lang-specific/english-hand-oov.h"
+#include "english-hand-oov.h"
 
-#include "moonshine-g2p/text-normalize.h"
+#include "text-normalize.h"
 
 #include <cctype>
 #include <cstring>
@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include <utility>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
 // U+02C8 / U+02CC as UTF-8 (avoid comparing multi-byte IPA to a single char).
@@ -420,4 +420,4 @@ std::string english_hand_oov_rules_ipa(std::string_view word) {
   return add_primary_stress_if_missing(oov_grapheme_to_ipa(word));
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

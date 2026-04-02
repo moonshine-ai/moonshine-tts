@@ -1,6 +1,6 @@
-#include "moonshine-g2p/lang-specific/french-compound-map.h"
+#include "french-compound-map.h"
 
-namespace moonshine_g2p::french_compound_map {
+namespace moonshine_tts::french_compound_map {
 
 const std::unordered_map<std::string, std::string>& cardinal_compound_ipa_entries() {
   static const std::unordered_map<std::string, std::string> kMap = {
@@ -91,4 +91,4 @@ const std::unordered_map<std::string, std::string>& cardinal_compound_ipa_entrie
   return kMap;
 }
 
-}  // namespace moonshine_g2p::french_compound_map
+}  // namespace moonshine_tts::french_compound_map

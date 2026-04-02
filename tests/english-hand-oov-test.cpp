@@ -1,13 +1,13 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "moonshine-g2p/lang-specific/english-hand-oov.h"
-#include "moonshine-g2p/lang-specific/english-numbers.h"
+#include "english-hand-oov.h"
+#include "english-numbers.h"
 
 #include <string>
 
-using moonshine_g2p::english_hand_oov_rules_ipa;
-using moonshine_g2p::english_number_token_ipa;
+using moonshine_tts::english_hand_oov_rules_ipa;
+using moonshine_tts::english_number_token_ipa;
 
 TEST_CASE("english_number_token_ipa") {
   CHECK(english_number_token_ipa("42").value() == "fˈɔɹtiˌtˈu");

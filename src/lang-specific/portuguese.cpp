@@ -1,10 +1,10 @@
-#include "moonshine-g2p/lang-specific/portuguese.h"
-#include "moonshine-g2p/lang-specific/portuguese-rules.h"
+#include "portuguese.h"
+#include "portuguese-rules.h"
 
-#include "moonshine-g2p/g2p-word-log.h"
-#include "moonshine-g2p/ipa-symbols.h"
-#include "moonshine-g2p/lang-specific/german.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "g2p-word-log.h"
+#include "ipa-symbols.h"
+#include "german.h"
+#include "utf8-utils.h"
 
 #include <algorithm>
 #include <cctype>
@@ -23,16 +23,16 @@
 #include <utility>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
 const std::string& kPri = ipa::kPrimaryStressUtf8;
 const std::string& kSec = ipa::kSecondaryStressUtf8;
 
-using moonshine_g2p::erase_utf8_substr;
-using moonshine_g2p::trim_ascii_ws_copy;
-using moonshine_g2p::utf8_append_codepoint;
-using moonshine_g2p::utf8_decode_at;
+using moonshine_tts::erase_utf8_substr;
+using moonshine_tts::trim_ascii_ws_copy;
+using moonshine_tts::utf8_append_codepoint;
+using moonshine_tts::utf8_decode_at;
 
 std::string utf8_lowercase_pt_surface(const std::string& word) {
   std::string out;
@@ -596,4 +596,4 @@ std::filesystem::path resolve_portuguese_dict_path(const std::filesystem::path& 
   return model_root / sub / "dict.tsv";
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

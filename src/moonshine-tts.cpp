@@ -1,7 +1,7 @@
-#include "moonshine-g2p/moonshine-tts.h"
+#include "moonshine-tts.h"
 
-#include "moonshine-g2p/moonshine-g2p.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "moonshine-g2p.h"
+#include "utf8-utils.h"
 
 #include <onnxruntime_cxx_api.h>
 
@@ -23,11 +23,33 @@ extern "C" {
 #include <unordered_map>
 #include <unordered_set>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 std::filesystem::path builtin_kokoro_bundle_dir() {
   return std::filesystem::path(__FILE__).parent_path().parent_path() / "data" /
          "kokoro";
+}
+
+std::filesystem::path preferred_parent_models_kokoro_dir() {
+  namespace fs = std::filesystem;
+  const fs::path bundled_dir = builtin_kokoro_bundle_dir();
+  const fs::path bundled_onnx = bundled_dir / "model.onnx";
+  if (!fs::is_regular_file(bundled_onnx)) {
+    return {};
+  }
+  const fs::path alt_dir =
+      builtin_cpp_data_root().parent_path().parent_path() / "models" / "kokoro";
+  const fs::path alt_onnx = alt_dir / "model.onnx";
+  if (!fs::is_regular_file(alt_onnx)) {
+    return {};
+  }
+  try {
+    if (fs::file_size(alt_onnx) > fs::file_size(bundled_onnx)) {
+      return alt_dir;
+    }
+  } catch (...) {
+  }
+  return {};
 }
 
 namespace {
@@ -388,9 +410,23 @@ struct MoonshineTTS::Impl {
   std::string g2p_dialect_{};
   MoonshineG2POptions g2p_opt_{};
   std::unique_ptr<MoonshineG2P> g2p_{};
+  /// Hugging Face ``onnx-community/Kokoro-82M-v1.0-ONNX`` quantized graph names the style vector ``style``;
+  /// local torch exports use ``ref_s``.
+  std::string style_input_name_ = "ref_s";
+
+  void detect_kokoro_style_input_name() {
+    const std::vector<std::string> names = session_.GetInputNames();
+    for (const std::string& n : names) {
+      if (n == "style") {
+        style_input_name_ = "style";
+        return;
+      }
+    }
+    style_input_name_ = "ref_s";
+  }
 
   void detect_speed_input_element_type() {
-    // Kokoro ONNX convention: inputs [0]=input_ids, [1]=ref_s, [2]=speed. Community HF models use
+    // Kokoro ONNX convention: inputs [0]=input_ids, [1]=ref_s|style, [2]=speed. Community HF models use
     // float32 speed [1]; local torch exports use double scalar.
     const size_t n_in = session_.GetInputCount();
     if (n_in < 3) {
@@ -451,6 +487,7 @@ struct MoonshineTTS::Impl {
     const std::string u8 = onnx_path.string();
     session_ = Ort::Session(env_, u8.c_str(), session_opts);
 #endif
+    detect_kokoro_style_input_name();
     detect_speed_input_element_type();
     const std::string lk = normalize_lang_key(opt.lang);
     resolve_lang_for_tts(lk, g2p_opt_, profile_, g2p_dialect_);
@@ -521,7 +558,7 @@ struct MoonshineTTS::Impl {
     std::vector<float> wave_all;
     wave_all.reserve(chunks.size() * 8192);
 
-    static const char* in_names[] = {"input_ids", "ref_s", "speed"};
+    const char* in_names[3] = {"input_ids", style_input_name_.c_str(), "speed"};
     static const char* out_names[] = {"waveform"};
 
     for (const std::string& piece : chunks) {
@@ -655,4 +692,4 @@ void write_wav_mono_pcm16(const std::filesystem::path& path, const std::vector<f
             static_cast<std::streamsize>(pcm.size() * sizeof(int16_t)));
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

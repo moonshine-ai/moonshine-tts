@@ -1,14 +1,14 @@
-#ifndef MOONSHINE_G2P_LANG_SPECIFIC_PORTUGUESE_H
-#define MOONSHINE_G2P_LANG_SPECIFIC_PORTUGUESE_H
+#ifndef MOONSHINE_TTS_LANG_SPECIFIC_PORTUGUESE_H
+#define MOONSHINE_TTS_LANG_SPECIFIC_PORTUGUESE_H
 
-#include "moonshine-g2p/rule-based-g2p.h"
+#include "rule-based-g2p.h"
 
 #include <filesystem>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 struct G2pWordLog;
 
@@ -59,6 +59,6 @@ bool dialect_resolves_to_brazilian_portuguese_rules(std::string_view dialect_id)
 std::filesystem::path resolve_portuguese_dict_path(const std::filesystem::path& model_root,
                                                     bool is_portugal);
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_LANG_SPECIFIC_PORTUGUESE_H
+#endif  // MOONSHINE_TTS_LANG_SPECIFIC_PORTUGUESE_H

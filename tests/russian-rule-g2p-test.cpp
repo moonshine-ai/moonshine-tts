@@ -1,9 +1,9 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "moonshine-g2p/lang-specific/russian.h"
-#ifdef MOONSHINE_G2P_WITH_MOONSHINE_G2P_CLASS
-#include "moonshine-g2p/moonshine-g2p.h"
+#include "russian.h"
+#ifdef MOONSHINE_TTS_WITH_G2P_CLASS
+#include "moonshine-g2p.h"
 #endif
 
 #include "rule-g2p-test-support.h"
@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-namespace r = moonshine_g2p::rule_g2p_test;
+namespace r = moonshine_tts::rule_g2p_test;
 
 namespace {
 
@@ -56,7 +56,7 @@ bool python_russian_import_ok() {
 }  // namespace
 
 TEST_CASE("russian: dialect_resolves_to_russian_rules") {
-  using moonshine_g2p::dialect_resolves_to_russian_rules;
+  using moonshine_tts::dialect_resolves_to_russian_rules;
   CHECK(dialect_resolves_to_russian_rules("ru"));
   CHECK(dialect_resolves_to_russian_rules("ru-RU"));
   CHECK(dialect_resolves_to_russian_rules("RU_ru"));
@@ -68,22 +68,22 @@ TEST_CASE("russian: lowercase homograph overrides capitalized") {
   const auto p = make_temp_tsv(
       "\xD0\xA0\xD0\xBE\xD0\xBC\xD0\xB0\twrong\n"
       "\xD1\x80\xD0\xBE\xD0\xBC\xD0\xB0\tright\n");
-  moonshine_g2p::RussianRuleG2p g(p);
+  moonshine_tts::RussianRuleG2p g(p);
   CHECK(g.word_to_ipa("\xD1\x80\xD0\xBE\xD0\xBC\xD0\xB0") == "right");
   std::filesystem::remove(p);
 }
 
-#ifdef MOONSHINE_G2P_WITH_MOONSHINE_G2P_CLASS
+#ifdef MOONSHINE_TTS_WITH_G2P_CLASS
 TEST_CASE("russian: MoonshineG2P ru uses rule backend and matches RussianRuleG2p") {
   const auto p = make_temp_tsv(
       "\xD1\x82\xD0\xB5\xD1\x81\xD1\x82\t\xCB\x88t\xC9\x9Bst\n");  // тест + IPA
-  moonshine_g2p::MoonshineG2POptions opt;
+  moonshine_tts::MoonshineG2POptions opt;
   opt.russian_dict_path = p;
-  moonshine_g2p::MoonshineG2P g("ru", opt);
+  moonshine_tts::MoonshineG2P g("ru", opt);
   CHECK(g.uses_russian_rules());
   CHECK_FALSE(g.uses_onnx());
   CHECK(g.dialect_id() == "ru-RU");
-  moonshine_g2p::RussianRuleG2p direct(p);
+  moonshine_tts::RussianRuleG2p direct(p);
   const std::string w = "\xD1\x82\xD0\xB5\xD1\x81\xD1\x82";
   CHECK(g.text_to_ipa(w) == direct.text_to_ipa(w));
   std::filesystem::remove(p);
@@ -95,7 +95,7 @@ TEST_CASE("russian: litva matches Python when data and python3 exist") {
   if (!std::filesystem::is_regular_file(dict) || !python_russian_import_ok()) {
     return;
   }
-  moonshine_g2p::RussianRuleG2p g(dict);
+  moonshine_tts::RussianRuleG2p g(dict);
   const std::string py = python_ipa_one_line(
       "\xD0\x9B\xD0\xB8\xD1\x82\xD0\xB2\xD0\xB0");
   CHECK(g.word_to_ipa(
@@ -120,7 +120,7 @@ TEST_CASE("russian: Cyrillic preposition plus 1891 matches Python when data and 
   std::error_code ec;
   std::filesystem::remove(tmp, ec);
   REQUIRE(py.size() == 1);
-  moonshine_g2p::RussianRuleG2p g(dict);
+  moonshine_tts::RussianRuleG2p g(dict);
   CHECK(g.text_to_ipa(line) == py[0]);
 }
 
@@ -133,7 +133,7 @@ TEST_CASE("russian: wiki-text first 100 lines match Python when data and python3
       !python_russian_import_ok()) {
     return;
   }
-  moonshine_g2p::RussianRuleG2p g(dict);
+  moonshine_tts::RussianRuleG2p g(dict);
   const auto src = r::read_text_first_lines(wiki, kWikiParityLines);
   const std::vector<std::string> py = python_ipa_first_lines(wiki, static_cast<int>(src.size()));
   REQUIRE(py.size() == src.size());

@@ -1,34 +1,36 @@
-#include "moonshine-g2p/rule-based-g2p-factory.h"
+#include "rule-based-g2p-factory.h"
 
-#include "moonshine-g2p/moonshine-g2p-options.h"
-#include "moonshine-g2p/rule-based-g2p.h"
-#include "moonshine-g2p/lang-specific/dutch.h"
-#include "moonshine-g2p/lang-specific/english.h"
-#include "moonshine-g2p/lang-specific/french.h"
-#include "moonshine-g2p/lang-specific/german.h"
-#include "moonshine-g2p/chinese-onnx-g2p.h"
-#include "moonshine-g2p/lang-specific/chinese.h"
-#include "moonshine-g2p/lang-specific/korean.h"
-#include "moonshine-g2p/lang-specific/vietnamese.h"
-#include "moonshine-g2p/lang-specific/japanese.h"
-#include "moonshine-g2p/lang-specific/arabic.h"
-#include "moonshine-g2p/lang-specific/italian.h"
-#include "moonshine-g2p/lang-specific/portuguese.h"
-#include "moonshine-g2p/lang-specific/russian.h"
-#include "moonshine-g2p/lang-specific/spanish.h"
-#include "moonshine-g2p/lang-specific/turkish.h"
-#include "moonshine-g2p/lang-specific/ukrainian.h"
-#include "moonshine-g2p/lang-specific/hindi.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "builtin-cpp-data-root.h"
+#include "moonshine-g2p-options.h"
+#include "rule-based-g2p.h"
+#include "dutch.h"
+#include "english.h"
+#include "french.h"
+#include "german.h"
+#include "chinese-onnx-g2p.h"
+#include "chinese.h"
+#include "korean.h"
+#include "vietnamese.h"
+#include "japanese.h"
+#include "arabic.h"
+#include "italian.h"
+#include "portuguese.h"
+#include "russian.h"
+#include "spanish.h"
+#include "turkish.h"
+#include "ukrainian.h"
+#include "hindi.h"
+#include "utf8-utils.h"
 
 #include <cctype>
 #include <filesystem>
 #include <fstream>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
+#include <string_view>
 #include <utility>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
 std::string trim_copy(std::string_view s) {
@@ -86,6 +88,16 @@ std::string normalize_spanish_dialect_cli_key(std::string_view raw) {
   return s;
 }
 
+bool file_looks_like_git_lfs_pointer(const std::filesystem::path& p) {
+  std::ifstream in(p);
+  std::string line;
+  if (!std::getline(in, line)) {
+    return false;
+  }
+  static constexpr std::string_view kPrefix = "version https://git-lfs.github.com/spec/v1";
+  return line.size() >= kPrefix.size() && line.compare(0, kPrefix.size(), kPrefix) == 0;
+}
+
 std::optional<RuleBasedG2pInstance> try_english(std::string_view trimmed,
                                                  const MoonshineG2POptions& options) {
   if (!dialect_resolves_to_english_rules(trimmed)) {
@@ -106,6 +118,11 @@ std::optional<RuleBasedG2pInstance> try_english(std::string_view trimmed,
   std::optional<std::filesystem::path> oov_onnx;
   const std::filesystem::path g2p_cfg = data_root / "g2p-config.json";
   if (std::filesystem::is_regular_file(g2p_cfg)) {
+    if (file_looks_like_git_lfs_pointer(g2p_cfg)) {
+      throw std::runtime_error(
+          "English G2P: " + g2p_cfg.generic_string() +
+          " is a Git LFS pointer stub, not JSON. From the moonshine-tts directory run: git lfs pull");
+    }
     std::ifstream cfg_in(g2p_cfg);
     const nlohmann::json j = nlohmann::json::parse(cfg_in);
     if (j.value("uses_heteronym_model", false)) {
@@ -157,8 +174,14 @@ std::optional<RuleBasedG2pInstance> try_german(std::string_view trimmed,
   if (!dialect_resolves_to_german_rules(trimmed)) {
     return std::nullopt;
   }
-  const std::filesystem::path gdict =
+  std::filesystem::path gdict =
       options.german_dict_path.value_or(options.model_root / "de" / "dict.tsv");
+  if (!options.german_dict_path && !std::filesystem::is_regular_file(gdict)) {
+    const std::filesystem::path bundled = builtin_cpp_data_root() / "de" / "dict.tsv";
+    if (std::filesystem::is_regular_file(bundled)) {
+      gdict = bundled;
+    }
+  }
   if (!std::filesystem::is_regular_file(gdict)) {
     throw std::runtime_error(
         "German G2P: lexicon not found at " + gdict.generic_string() +
@@ -524,4 +547,4 @@ std::vector<std::pair<RuleBasedG2pKind, std::vector<std::string>>> rule_based_g2
   return out;
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

@@ -1,7 +1,7 @@
-#include "moonshine-g2p/lang-specific/ukrainian.h"
+#include "ukrainian.h"
 
-#include "moonshine-g2p/g2p-word-log.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "g2p-word-log.h"
+#include "utf8-utils.h"
 
 extern "C" {
 #include <utf8proc.h>
@@ -16,13 +16,13 @@ extern "C" {
 #include <unordered_set>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
-using moonshine_g2p::trim_ascii_ws_copy;
-using moonshine_g2p::utf8_append_codepoint;
-using moonshine_g2p::utf8_decode_at;
-using moonshine_g2p::utf8_str_to_u32;
+using moonshine_tts::trim_ascii_ws_copy;
+using moonshine_tts::utf8_append_codepoint;
+using moonshine_tts::utf8_decode_at;
+using moonshine_tts::utf8_str_to_u32;
 
 bool is_all_ascii_digits(std::string_view s) {
   if (s.empty()) {
@@ -902,4 +902,4 @@ std::string ukrainian_text_to_ipa(const std::string& text, bool with_stress,
   return UkrainianRuleG2p(std::move(o)).text_to_ipa(text, per_word_log);
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

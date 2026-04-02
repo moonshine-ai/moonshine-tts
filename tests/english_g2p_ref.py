@@ -26,7 +26,7 @@ _HOMOGRAPH = ROOT / "models" / "en_us" / "heteronym" / "homograph_index.json"
 
 def split_text_to_words_cpp_compat(text: str) -> list[str]:
     """
-    Match ``moonshine_g2p::split_text_to_words``: split only on ASCII whitespace
+    Match ``moonshine_tts::split_text_to_words``: split only on ASCII whitespace
     bytes, not full Unicode whitespace (``str.split()`` also splits U+00A0, thin
     space, etc., which would desync wiki parity with C++).
     """

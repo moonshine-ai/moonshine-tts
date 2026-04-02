@@ -1,12 +1,12 @@
-#ifndef MOONSHINE_G2P_LANG_SPECIFIC_SPANISH_H
-#define MOONSHINE_G2P_LANG_SPECIFIC_SPANISH_H
+#ifndef MOONSHINE_TTS_LANG_SPECIFIC_SPANISH_H
+#define MOONSHINE_TTS_LANG_SPECIFIC_SPANISH_H
 
-#include "moonshine-g2p/rule-based-g2p.h"
+#include "rule-based-g2p.h"
 
 #include <string>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 /// Pronunciation preset for rule-based Spanish G2P (mirrors ``spanish_rule_g2p.SpanishDialect``).
 struct SpanishDialect {
@@ -69,6 +69,6 @@ std::string spanish_text_to_ipa(const std::string& text, const SpanishDialect& d
                                 std::vector<G2pWordLog>* per_word_log = nullptr,
                                 bool expand_cardinal_digits = true);
 
-} // namespace moonshine_g2p
+} // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_LANG_SPECIFIC_SPANISH_H
+#endif  // MOONSHINE_TTS_LANG_SPECIFIC_SPANISH_H

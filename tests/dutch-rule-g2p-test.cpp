@@ -1,7 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "moonshine-g2p/lang-specific/dutch.h"
+#include "dutch.h"
 #include "rule-g2p-test-support.h"
 
 #include <chrono>
@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace r = moonshine_g2p::rule_g2p_test;
+namespace r = moonshine_tts::rule_g2p_test;
 
 namespace {
 
@@ -37,7 +37,7 @@ TEST_CASE("dutch: lowercase homograph overrides capitalized") {
   const auto p = make_temp_tsv(
       "Licht\twrong\n"
       "licht\tl\xC9\xAAxt\n");
-  moonshine_g2p::DutchRuleG2p g(p);
+  moonshine_tts::DutchRuleG2p g(p);
   CHECK(g.word_to_ipa("licht") == "l\xC9\xAAxt");
   std::filesystem::remove(p);
 }
@@ -45,7 +45,7 @@ TEST_CASE("dutch: lowercase homograph overrides capitalized") {
 TEST_CASE("dutch: lexicon stress not shifted by vocoder (unlike German policy)") {
   static const std::string kPri{"\xCB\x88"};
   const auto p = make_temp_tsv("komma\tk\xC9\xAA\xCB\x88m\xC9\x91\n");  // komma\tkɪˈmɑ (example shape)
-  moonshine_g2p::DutchRuleG2p g(p);
+  moonshine_tts::DutchRuleG2p g(p);
   const std::string ipa = g.word_to_ipa("komma");
   CHECK(ipa.find(kPri) != std::string::npos);
   CHECK(ipa == "kɪˈmɑ");
@@ -54,7 +54,7 @@ TEST_CASE("dutch: lexicon stress not shifted by vocoder (unlike German policy)")
 
 TEST_CASE("dutch: rule IPA gets vocoder stress when enabled") {
   const auto p = make_temp_tsv("x\ty\n");
-  moonshine_g2p::DutchRuleG2p g(p);
+  moonshine_tts::DutchRuleG2p g(p);
   const std::string ipa = g.word_to_ipa("fiets");
   static const std::string kPri{"\xCB\x88"};
   CHECK(ipa.find(kPri) != std::string::npos);
@@ -62,7 +62,7 @@ TEST_CASE("dutch: rule IPA gets vocoder stress when enabled") {
 }
 
 TEST_CASE("dutch: normalize_ipa_stress_for_vocoder idempotent") {
-  using moonshine_g2p::DutchRuleG2p;
+  using moonshine_tts::DutchRuleG2p;
   // Same edge case as Python: coda-only tail after ˈ moves mark to end (fɪˈts -> fɪtsˈ).
   std::string a = DutchRuleG2p::normalize_ipa_stress_for_vocoder("f\xC9\xAA\xCB\x88ts");
   std::string b = DutchRuleG2p::normalize_ipa_stress_for_vocoder(a);
@@ -71,7 +71,7 @@ TEST_CASE("dutch: normalize_ipa_stress_for_vocoder idempotent") {
 }
 
 TEST_CASE("dutch: dialect_resolves_to_dutch_rules") {
-  using moonshine_g2p::dialect_resolves_to_dutch_rules;
+  using moonshine_tts::dialect_resolves_to_dutch_rules;
   CHECK(dialect_resolves_to_dutch_rules("nl"));
   CHECK(dialect_resolves_to_dutch_rules("nl-NL"));
   CHECK(dialect_resolves_to_dutch_rules("NL_nl"));
@@ -84,7 +84,7 @@ TEST_CASE("dutch: optional real dict fiets matches Python when data present") {
   if (!std::filesystem::is_regular_file(dict)) {
     return;
   }
-  moonshine_g2p::DutchRuleG2p g(dict);
+  moonshine_tts::DutchRuleG2p g(dict);
   CHECK(g.word_to_ipa("fiets") == "\xCB\x88" "fi" "\xCB\x90" "ts");
 }
 
@@ -97,7 +97,7 @@ TEST_CASE("dutch: wiki-text first 100 lines match Python when data and python3 e
       !python_dutch_import_ok()) {
     return;
   }
-  moonshine_g2p::DutchRuleG2p g(dict);
+  moonshine_tts::DutchRuleG2p g(dict);
   const auto src = r::read_text_first_lines(wiki, kWikiParityLines);
   const std::vector<std::string> py = python_ipa_first_lines(wiki, static_cast<int>(src.size()));
   REQUIRE(py.size() == src.size());

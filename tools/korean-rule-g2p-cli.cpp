@@ -1,5 +1,5 @@
 // Korean rule + lexicon G2P (no ONNX). Mirrors ``korean_rule_g2p.py`` CLI subset.
-#include "moonshine-g2p/lang-specific/korean.h"
+#include "korean.h"
 
 #include <filesystem>
 #include <iostream>
@@ -61,10 +61,10 @@ int main(int argc, char** argv) {
   }
 
   try {
-    moonshine_g2p::KoreanRuleG2p::Options opt;
+    moonshine_tts::KoreanRuleG2p::Options opt;
     opt.syllable_sep = std::move(syllable_sep);
     opt.expand_cardinal_digits = expand_digits;
-    moonshine_g2p::KoreanRuleG2p g2p(dict_path, opt);
+    moonshine_tts::KoreanRuleG2p g2p(dict_path, opt);
     std::cout << g2p.text_to_ipa(std::move(text)) << '\n';
   } catch (const std::exception& e) {
     std::cerr << "error: " << e.what() << '\n';

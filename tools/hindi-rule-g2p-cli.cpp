@@ -1,5 +1,5 @@
 // Hindi rule + lexicon G2P (no ONNX). Mirrors ``hindi_rule_g2p.py`` CLI subset.
-#include "moonshine-g2p/lang-specific/hindi.h"
+#include "hindi.h"
 
 #include <filesystem>
 #include <iostream>
@@ -24,7 +24,7 @@ std::string read_all_stdin() {
 }  // namespace
 
 int main(int argc, char** argv) {
-  std::filesystem::path dict_path = moonshine_g2p::builtin_hindi_dict_path();
+  std::filesystem::path dict_path = moonshine_tts::builtin_hindi_dict_path();
   bool expand_digits = true;
   bool with_stress = true;
   bool force_stdin = false;
@@ -62,10 +62,10 @@ int main(int argc, char** argv) {
   }
 
   try {
-    moonshine_g2p::HindiRuleG2p::Options opt;
+    moonshine_tts::HindiRuleG2p::Options opt;
     opt.expand_cardinal_digits = expand_digits;
     opt.with_stress = with_stress;
-    moonshine_g2p::HindiRuleG2p g2p(dict_path, opt);
+    moonshine_tts::HindiRuleG2p g2p(dict_path, opt);
     std::cout << g2p.text_to_ipa(std::move(text)) << '\n';
   } catch (const std::exception& e) {
     std::cerr << "error: " << e.what() << '\n';

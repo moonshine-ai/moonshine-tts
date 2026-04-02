@@ -1,19 +1,19 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "moonshine-g2p/moonshine-g2p.h"
+#include "moonshine-g2p.h"
 #include "rule-g2p-test-support.h"
 
 #include <cstdlib>
 #include <filesystem>
 
-using namespace moonshine_g2p;
-namespace r = moonshine_g2p::rule_g2p_test;
+using namespace moonshine_tts;
+namespace r = moonshine_tts::rule_g2p_test;
 
-TEST_CASE("MoonshineG2P en_us rule-based when MOONSHINE_G2P_MODELS_ROOT is set") {
-  const char* root = std::getenv("MOONSHINE_G2P_MODELS_ROOT");
+TEST_CASE("MoonshineG2P en_us rule-based when MOONSHINE_TTS_MODELS_ROOT is set") {
+  const char* root = std::getenv("MOONSHINE_TTS_MODELS_ROOT");
   if (root == nullptr || root[0] == '\0') {
-    MESSAGE("skip: export MOONSHINE_G2P_MODELS_ROOT to models/en_us parent");
+    MESSAGE("skip: export MOONSHINE_TTS_MODELS_ROOT to models/en_us parent");
     return;
   }
   MoonshineG2POptions opt;

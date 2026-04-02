@@ -1,6 +1,6 @@
-#include "moonshine-g2p/lang-specific/arabic-ipa.h"
+#include "arabic-ipa.h"
 
-#include "moonshine-g2p/utf8-utils.h"
+#include "utf8-utils.h"
 
 extern "C" {
 #include <utf8proc.h>
@@ -12,7 +12,7 @@ extern "C" {
 #include <utility>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
 const std::unordered_set<char32_t> kSun{U'\u062A', U'\u062B', U'\u062F', U'\u0630', U'\u0631', U'\u0632',
@@ -450,4 +450,4 @@ std::string arabic_msa_word_to_ipa_with_assimilation_utf8(std::string_view utf8)
   return diac_word_to_ipa_u32(w);
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

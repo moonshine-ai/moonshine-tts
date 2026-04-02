@@ -1,11 +1,11 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "moonshine-g2p/ipa-postprocess.h"
+#include "ipa-postprocess.h"
 
 #include <unordered_set>
 
-using namespace moonshine_g2p;
+using namespace moonshine_tts;
 
 TEST_CASE("levenshtein_distance") {
   CHECK(levenshtein_distance({}, {}) == 0);
@@ -67,7 +67,7 @@ TEST_CASE("ipa_to_piper_ready without coercion") {
 }
 
 TEST_CASE("normalize_g2p_ipa_for_piper Korean rule IPA toward eSpeak-ng") {
-  // G2P for 안녕하세요 / 여보세요 (moonshine_g2p --language ko).
+  // G2P for 안녕하세요 / 여보세요 (moonshine-tts-g2p --language ko).
   const std::string annyeong =
       std::string("an\xc9\xb2j\xca\x8c\xc5\x8bhas") + "\xca\xb0" + "ejo";
   const std::string annyeong_es =

@@ -1,7 +1,7 @@
-#include "moonshine-g2p/lang-specific/german.h"
-#include "moonshine-g2p/g2p-word-log.h"
-#include "moonshine-g2p/ipa-symbols.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "german.h"
+#include "g2p-word-log.h"
+#include "ipa-symbols.h"
+#include "utf8-utils.h"
 
 #include <algorithm>
 #include <cctype>
@@ -13,15 +13,15 @@
 #include <utility>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
 using ipa::kPrimaryStressUtf8;
 using ipa::kSecondaryStressUtf8;
-using moonshine_g2p::erase_utf8_substr;
-using moonshine_g2p::trim_ascii_ws_copy;
-using moonshine_g2p::utf8_decode_at;
-using moonshine_g2p::utf8_str_to_u32;
+using moonshine_tts::erase_utf8_substr;
+using moonshine_tts::trim_ascii_ws_copy;
+using moonshine_tts::utf8_decode_at;
+using moonshine_tts::utf8_str_to_u32;
 
 char32_t german_tolower_cp(char32_t c) {
   switch (c) {
@@ -1219,4 +1219,4 @@ std::vector<std::string> GermanRuleG2p::dialect_ids() {
   return dedupe_dialect_ids_preserve_first({"de", "de-DE", "de_de", "german"});
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

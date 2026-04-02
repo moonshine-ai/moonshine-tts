@@ -1,16 +1,16 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "moonshine-g2p/cmudict-tsv.h"
+#include "cmudict-tsv.h"
 
 #include <filesystem>
 #include <fstream>
 
-using namespace moonshine_g2p;
+using namespace moonshine_tts;
 
 TEST_CASE("cmudict-tsv load and lookup") {
   const auto dir = std::filesystem::temp_directory_path();
-  const auto path = dir / "moonshine_g2p_test_dict.tsv";
+  const auto path = dir / "moonshine_tts_test_dict.tsv";
   {
     std::ofstream out(path);
     out << "hello\thəˈloʊ\n";

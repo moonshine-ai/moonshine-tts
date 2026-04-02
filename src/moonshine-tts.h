@@ -1,8 +1,8 @@
-#ifndef MOONSHINE_G2P_MOONSHINE_TTS_H
-#define MOONSHINE_G2P_MOONSHINE_TTS_H
+#ifndef MOONSHINE_TTS_MOONSHINE_TTS_H
+#define MOONSHINE_TTS_MOONSHINE_TTS_H
 
-#include "moonshine-g2p/builtin-cpp-data-root.h"
-#include "moonshine-g2p/moonshine-g2p-options.h"
+#include "builtin-cpp-data-root.h"
+#include "moonshine-g2p-options.h"
 
 #include <cstdint>
 #include <filesystem>
@@ -11,10 +11,16 @@
 #include <string_view>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 /// Default Kokoro bundle: ``data/kokoro`` at the repository root (``config.json``, ``model.onnx``, ``voices/``).
 std::filesystem::path builtin_kokoro_bundle_dir();
+
+/// When ``moonshine-tts`` lives at ``<repo>/moonshine-tts/`` and ``<repo>/models/kokoro/model.onnx`` exists
+/// and is strictly larger than ``moonshine-tts/data/kokoro/model.onnx``, returns ``<repo>/models/kokoro``.
+/// Otherwise returns an empty path. Monorepos often keep the full Kokoro graph under ``models/kokoro`` while
+/// the submodule bundles a smaller ONNX; the speak CLI uses this to default to the higher-fidelity model.
+std::filesystem::path preferred_parent_models_kokoro_dir();
 
 /// Options for ``MoonshineTTS`` (Kokoro ONNX bundle + Moonshine G2P).
 struct MoonshineTTSOptions {
@@ -65,6 +71,6 @@ class MoonshineTTS {
 /// Writes mono 16-bit PCM WAV at ``MoonshineTTS::kSampleRateHz`` (samples clipped to [-1, 1]).
 void write_wav_mono_pcm16(const std::filesystem::path& path, const std::vector<float>& samples);
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_MOONSHINE_TTS_H
+#endif  // MOONSHINE_TTS_MOONSHINE_TTS_H

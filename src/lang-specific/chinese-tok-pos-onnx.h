@@ -1,5 +1,5 @@
-#ifndef MOONSHINE_G2P_CHINESE_TOK_POS_ONNX_H
-#define MOONSHINE_G2P_CHINESE_TOK_POS_ONNX_H
+#ifndef MOONSHINE_TTS_CHINESE_TOK_POS_ONNX_H
+#define MOONSHINE_TTS_CHINESE_TOK_POS_ONNX_H
 
 #include <onnxruntime_cxx_api.h>
 
@@ -10,7 +10,7 @@
 #include <utility>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 /// Simplified-Chinese surfaces + UD UPOS via ONNX (``KoichiYasuoka/chinese-roberta-base-upos`` BIO),
 /// mirroring ``chinese_tok_pos_onnx.ChineseTokPosOnnx`` / WordPiece from
@@ -41,6 +41,6 @@ class ChineseTokPosOnnx {
 /// ``<repo>/data/zh_hans/roberta_chinese_base_upos_onnx`` when *repo_root* is the repository root.
 std::filesystem::path default_chinese_tok_pos_model_dir(const std::filesystem::path& repo_root);
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_CHINESE_TOK_POS_ONNX_H
+#endif  // MOONSHINE_TTS_CHINESE_TOK_POS_ONNX_H

@@ -1,7 +1,7 @@
-#include "moonshine-g2p/lang-specific/hindi.h"
-#include "moonshine-g2p/lang-specific/hindi-numbers.h"
-#include "moonshine-g2p/g2p-word-log.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "hindi.h"
+#include "hindi-numbers.h"
+#include "g2p-word-log.h"
+#include "utf8-utils.h"
 
 #include <cctype>
 #include <fstream>
@@ -16,7 +16,7 @@ extern "C" {
 #include <utf8proc.h>
 }
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
 constexpr char32_t kVirama = 0x094D;
@@ -608,4 +608,4 @@ std::string hindi_text_to_ipa(const std::string& text, bool with_stress,
   return g.text_to_ipa(text, per_word_log);
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

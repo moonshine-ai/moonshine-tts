@@ -1,7 +1,7 @@
-#include "moonshine-g2p/g2p-word-log.h"
-#include "moonshine-g2p/lang-specific/spanish.h"
-#include "moonshine-g2p/lang-specific/spanish-unicode.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "g2p-word-log.h"
+#include "spanish.h"
+#include "spanish-unicode.h"
+#include "utf8-utils.h"
 
 #include <algorithm>
 #include <cctype>
@@ -13,11 +13,11 @@
 #include <utility>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
-using moonshine_g2p::utf8_append_codepoint;
-using moonshine_g2p::utf8_decode_at;
+using moonshine_tts::utf8_append_codepoint;
+using moonshine_tts::utf8_decode_at;
 
 bool is_vowel_ch(char32_t ch) {
   const char32_t cl = ch == U'Ü' ? U'ü' : ch;
@@ -1028,4 +1028,4 @@ std::string spanish_text_to_ipa(const std::string &text, const SpanishDialect &d
   return SpanishRuleG2p(dialect, with_stress, expand_cardinal_digits).text_to_ipa(text, per_word_log);
 }
 
-} // namespace moonshine_g2p
+} // namespace moonshine_tts

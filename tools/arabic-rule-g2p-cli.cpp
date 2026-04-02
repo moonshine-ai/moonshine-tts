@@ -1,5 +1,5 @@
 // MSA Arabic ONNX + rule G2P (mirrors ``arabic_rule_g2p.py`` CLI subset).
-#include "moonshine-g2p/lang-specific/arabic.h"
+#include "arabic.h"
 
 #include <filesystem>
 #include <iostream>
@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
   }
 
   try {
-    moonshine_g2p::ArabicRuleG2p g2p(onnx_dir, dict_path, use_cuda);
+    moonshine_tts::ArabicRuleG2p g2p(onnx_dir, dict_path, use_cuda);
     std::cout << g2p.text_to_ipa(std::move(text)) << '\n';
   } catch (const std::exception& e) {
     std::cerr << "error: " << e.what() << '\n';

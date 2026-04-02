@@ -1,4 +1,4 @@
-#include "moonshine-g2p/japanese-onnx-g2p.h"
+#include "japanese-onnx-g2p.h"
 
 #include <filesystem>
 #include <iostream>
@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
   }
 
   try {
-    moonshine_g2p::JapaneseOnnxG2p g2p(std::move(model_dir), std::move(dict_path), false);
+    moonshine_tts::JapaneseOnnxG2p g2p(std::move(model_dir), std::move(dict_path), false);
     std::cout << g2p.text_to_ipa(text) << '\n';
   } catch (const std::exception& e) {
     std::cerr << "error: " << e.what() << '\n';

@@ -1,11 +1,11 @@
-#include "moonshine-g2p/heteronym-context.h"
+#include "heteronym-context.h"
 
 #include <algorithm>
 #include <cmath>
 #include <string>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 namespace {
 
@@ -74,4 +74,4 @@ std::optional<std::tuple<std::string, int, int>> heteronym_centered_context_wind
   return std::make_tuple(join_cells(cells), s, e);
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

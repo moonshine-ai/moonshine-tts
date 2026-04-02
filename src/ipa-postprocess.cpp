@@ -1,6 +1,6 @@
-#include "moonshine-g2p/ipa-postprocess.h"
+#include "ipa-postprocess.h"
 
-#include "moonshine-g2p/utf8-utils.h"
+#include "utf8-utils.h"
 
 extern "C" {
 #include <utf8proc.h>
@@ -14,7 +14,7 @@ extern "C" {
 #include <unordered_map>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 namespace {
 
@@ -380,4 +380,4 @@ std::optional<std::string> match_prediction_to_cmudict_ipa(const std::string& pr
   return std::nullopt;
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

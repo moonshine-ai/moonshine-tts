@@ -1,6 +1,6 @@
-#include "moonshine-g2p/lang-specific/chinese-numbers.h"
+#include "chinese-numbers.h"
 
-#include "moonshine-g2p/utf8-utils.h"
+#include "utf8-utils.h"
 
 #include <cstdint>
 #include <limits>
@@ -9,7 +9,7 @@
 #include <string_view>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
 constexpr std::uint64_t kMaxCardinal = 10'000'000'000'000'000ULL;  // 10^16
@@ -278,4 +278,4 @@ std::optional<std::string> arabic_numeral_token_to_han(std::string_view token_sv
   return body;
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

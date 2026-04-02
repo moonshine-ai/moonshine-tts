@@ -1,14 +1,14 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "moonshine-g2p/lang-specific/english.h"
+#include "english.h"
 #include "rule-g2p-test-support.h"
 
 #include <filesystem>
 #include <string>
 #include <vector>
 
-namespace r = moonshine_g2p::rule_g2p_test;
+namespace r = moonshine_tts::rule_g2p_test;
 
 namespace {
 
@@ -37,7 +37,7 @@ bool python_english_import_ok() {
 }  // namespace
 
 TEST_CASE("english: dialect_resolves_to_english_rules") {
-  using moonshine_g2p::dialect_resolves_to_english_rules;
+  using moonshine_tts::dialect_resolves_to_english_rules;
   CHECK(dialect_resolves_to_english_rules("en_us"));
   CHECK(dialect_resolves_to_english_rules("en-US"));
   CHECK(dialect_resolves_to_english_rules("EN_US"));
@@ -55,7 +55,7 @@ TEST_CASE("english: wiki-text first 100 lines match Python when data and python3
     return;
   }
   const std::filesystem::path homograph = en_homograph_json(repo);
-  moonshine_g2p::EnglishRuleG2p g(dict, homograph, std::nullopt, std::nullopt);
+  moonshine_tts::EnglishRuleG2p g(dict, homograph, std::nullopt, std::nullopt);
   const auto src = r::read_text_first_lines(wiki, kWikiParityLines);
   const std::vector<std::string> py = python_ipa_first_lines(wiki, static_cast<int>(src.size()));
   REQUIRE(py.size() == src.size());

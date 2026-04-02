@@ -1,7 +1,7 @@
-#ifndef MOONSHINE_G2P_LANG_SPECIFIC_CHINESE_H
-#define MOONSHINE_G2P_LANG_SPECIFIC_CHINESE_H
+#ifndef MOONSHINE_TTS_LANG_SPECIFIC_CHINESE_H
+#define MOONSHINE_TTS_LANG_SPECIFIC_CHINESE_H
 
-#include "moonshine-g2p/rule-based-g2p.h"
+#include "rule-based-g2p.h"
 
 #include <filesystem>
 #include <string>
@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 struct G2pWordLog;
 
@@ -57,6 +57,6 @@ std::filesystem::path resolve_chinese_dict_path(const std::filesystem::path& mod
 /// ``data/zh_hans/roberta_chinese_base_upos_onnx``.
 std::filesystem::path resolve_chinese_onnx_model_dir(const std::filesystem::path& model_root);
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_LANG_SPECIFIC_CHINESE_H
+#endif  // MOONSHINE_TTS_LANG_SPECIFIC_CHINESE_H

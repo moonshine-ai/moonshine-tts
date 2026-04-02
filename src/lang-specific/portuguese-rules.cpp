@@ -1,7 +1,7 @@
-#include "moonshine-g2p/lang-specific/portuguese-rules.h"
+#include "portuguese-rules.h"
 
-#include "moonshine-g2p/ipa-symbols.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "ipa-symbols.h"
+#include "utf8-utils.h"
 
 #include <algorithm>
 #include <cctype>
@@ -14,7 +14,7 @@
 #include <utility>
 #include <vector>
 
-namespace moonshine_g2p::portuguese_rules {
+namespace moonshine_tts::portuguese_rules {
 
 namespace {
 const std::string& kPri = ipa::kPrimaryStressUtf8;
@@ -86,13 +86,13 @@ std::string normalize_lookup_key_utf8_impl(const std::string& word) {
   while (i < word.size()) {
     char32_t cp = 0;
     size_t adv = 0;
-    moonshine_g2p::utf8_decode_at(word, i, cp, adv);
+    moonshine_tts::utf8_decode_at(word, i, cp, adv);
     if (cp == U'\u2019') {
       cp = U'\'';
     }
     const char32_t cl = pt_tolower(cp);
     if (is_pt_key_cp(cl)) {
-      moonshine_g2p::utf8_append_codepoint(out, cl);
+      moonshine_tts::utf8_append_codepoint(out, cl);
     }
     i += adv;
   }
@@ -106,13 +106,13 @@ std::string normalize_lookup_key_utf8(const std::string& word) {
 }
 
 std::u32string utf8_to_u32_pt(const std::string& s) {
-  return moonshine_g2p::utf8_str_to_u32(s);
+  return moonshine_tts::utf8_str_to_u32(s);
 }
 
 std::string u32_to_utf8_pt(const std::u32string& s) {
   std::string o;
   for (char32_t c : s) {
-    moonshine_g2p::utf8_append_codepoint(o, c);
+    moonshine_tts::utf8_append_codepoint(o, c);
   }
   return o;
 }
@@ -130,13 +130,13 @@ bool is_allowed_pt_grapheme(char32_t c) {
 }
 
 std::u32string filter_pt_word_graphemes_utf8(const std::string& word) {
-  const std::string t = moonshine_g2p::trim_ascii_ws_copy(word);
+  const std::string t = moonshine_tts::trim_ascii_ws_copy(word);
   std::u32string o;
   size_t i = 0;
   while (i < t.size()) {
     char32_t cp = 0;
     size_t adv = 0;
-    moonshine_g2p::utf8_decode_at(t, i, cp, adv);
+    moonshine_tts::utf8_decode_at(t, i, cp, adv);
     if (is_allowed_pt_grapheme(cp)) {
       o.push_back(pt_tolower(cp));
     }
@@ -408,8 +408,8 @@ size_t default_stressed_syllable_index_u32(const std::vector<std::u32string>& sy
 }
 
 std::string strip_stress_chars(std::string s) {
-  moonshine_g2p::erase_utf8_substr(s, kPri);
-  moonshine_g2p::erase_utf8_substr(s, kSec);
+  moonshine_tts::erase_utf8_substr(s, kPri);
+  moonshine_tts::erase_utf8_substr(s, kSec);
   return s;
 }
 
@@ -423,11 +423,11 @@ std::string insert_primary_stress_before_vowel_utf8(std::string ipa) {
         ch == U'\u00E6' || ch == U'\u0254') {
       std::string pre;
       for (size_t j = 0; j < i; ++j) {
-        moonshine_g2p::utf8_append_codepoint(pre, u[j]);
+        moonshine_tts::utf8_append_codepoint(pre, u[j]);
       }
       std::string post;
       for (size_t j = i; j < u.size(); ++j) {
-        moonshine_g2p::utf8_append_codepoint(post, u[j]);
+        moonshine_tts::utf8_append_codepoint(post, u[j]);
       }
       return pre + kPri + post;
     }
@@ -1128,4 +1128,4 @@ const std::unordered_map<std::string, std::string>& sc_straddle() {
   return sc_straddle_map_impl();
 }
 
-}  // namespace moonshine_g2p::portuguese_rules
+}  // namespace moonshine_tts::portuguese_rules

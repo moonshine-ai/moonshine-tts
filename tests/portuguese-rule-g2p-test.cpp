@@ -1,7 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "moonshine-g2p/lang-specific/portuguese.h"
+#include "portuguese.h"
 #include "rule-g2p-test-support.h"
 
 #include <chrono>
@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace r = moonshine_g2p::rule_g2p_test;
+namespace r = moonshine_tts::rule_g2p_test;
 
 namespace {
 
@@ -62,8 +62,8 @@ bool python_portuguese_import_ok() {
 }  // namespace
 
 TEST_CASE("portuguese: dialect flags") {
-  using moonshine_g2p::dialect_resolves_to_brazilian_portuguese_rules;
-  using moonshine_g2p::dialect_resolves_to_portugal_rules;
+  using moonshine_tts::dialect_resolves_to_brazilian_portuguese_rules;
+  using moonshine_tts::dialect_resolves_to_portugal_rules;
   CHECK(dialect_resolves_to_brazilian_portuguese_rules("pt-BR"));
   CHECK(dialect_resolves_to_brazilian_portuguese_rules("pt_br"));
   CHECK(dialect_resolves_to_portugal_rules("pt-PT"));
@@ -76,7 +76,7 @@ TEST_CASE("portuguese: lowercase homograph overrides capitalized") {
   const auto p = make_temp_tsv(
       "Rio\twrong\n"
       "rio\tright\n");
-  moonshine_g2p::PortugueseRuleG2p g(p, false);
+  moonshine_tts::PortugueseRuleG2p g(p, false);
   CHECK(g.word_to_ipa("rio") == "right");
   std::filesystem::remove(p);
 }
@@ -84,7 +84,7 @@ TEST_CASE("portuguese: lowercase homograph overrides capitalized") {
 TEST_CASE("portuguese: lexicon stress not shifted by vocoder") {
   static const std::string kPri{"\xCB\x88"};
   const auto p = make_temp_tsv("testlex\tt\xC9\xAA\xCB\x88st\n");
-  moonshine_g2p::PortugueseRuleG2p g(p, false);
+  moonshine_tts::PortugueseRuleG2p g(p, false);
   const std::string ipa = g.word_to_ipa("testlex");
   CHECK(ipa.find(kPri) != std::string::npos);
   std::filesystem::remove(p);
@@ -95,7 +95,7 @@ TEST_CASE("portuguese: casa matches Python when data and python3 exist") {
   if (!std::filesystem::is_regular_file(dict) || !python_portuguese_import_ok()) {
     return;
   }
-  moonshine_g2p::PortugueseRuleG2p g(dict, false);
+  moonshine_tts::PortugueseRuleG2p g(dict, false);
   const std::string py = python_ipa_one_line("casa", false);
   CHECK(g.text_to_ipa("casa") == py);
 }
@@ -109,7 +109,7 @@ TEST_CASE("portuguese: wiki-text first 100 lines pt_br match Python when data pr
       !python_portuguese_import_ok()) {
     return;
   }
-  moonshine_g2p::PortugueseRuleG2p g(dict, false);
+  moonshine_tts::PortugueseRuleG2p g(dict, false);
   const auto src = r::read_text_first_lines(wiki, kWikiParityLines);
   const std::vector<std::string> py = python_ipa_first_lines(wiki, static_cast<int>(src.size()), false);
   REQUIRE(py.size() == src.size());
@@ -128,7 +128,7 @@ TEST_CASE("portuguese: wiki-text first 100 lines pt_pt match Python when data pr
       !python_portuguese_import_ok()) {
     return;
   }
-  moonshine_g2p::PortugueseRuleG2p g(dict, true);
+  moonshine_tts::PortugueseRuleG2p g(dict, true);
   const auto src = r::read_text_first_lines(wiki, kWikiParityLines);
   const std::vector<std::string> py = python_ipa_first_lines(wiki, static_cast<int>(src.size()), true);
   REQUIRE(py.size() == src.size());

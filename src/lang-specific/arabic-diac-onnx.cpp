@@ -1,5 +1,5 @@
-#include "moonshine-g2p/arabic-diac-onnx.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "arabic-diac-onnx.h"
+#include "utf8-utils.h"
 
 #include <nlohmann/json.hpp>
 
@@ -19,7 +19,7 @@ extern "C" {
 #include <utf8proc.h>
 }
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace ar_wp {
 
 Ort::SessionOptions make_ar_ort_options(bool use_cuda) {
@@ -752,4 +752,4 @@ std::string ArabicDiacOnnx::diacritize(std::string_view text_utf8) const {
   return composed;
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

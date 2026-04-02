@@ -1,12 +1,12 @@
-#ifndef MOONSHINE_G2P_CMUDICT_TSV_H
-#define MOONSHINE_G2P_CMUDICT_TSV_H
+#ifndef MOONSHINE_TTS_CMUDICT_TSV_H
+#define MOONSHINE_TTS_CMUDICT_TSV_H
 
 #include <filesystem>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 // word key (normalized grapheme) -> sorted unique IPA strings (TSV: word<TAB>ipa).
 class CmudictTsv {
@@ -19,6 +19,6 @@ class CmudictTsv {
   std::unordered_map<std::string, std::vector<std::string>> ipa_by_word_;
 };
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_CMUDICT_TSV_H
+#endif  // MOONSHINE_TTS_CMUDICT_TSV_H

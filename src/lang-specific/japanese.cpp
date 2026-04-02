@@ -1,13 +1,13 @@
-#include "moonshine-g2p/lang-specific/japanese.h"
-#include "moonshine-g2p/g2p-word-log.h"
-#include "moonshine-g2p/japanese-onnx-g2p.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "japanese.h"
+#include "g2p-word-log.h"
+#include "japanese-onnx-g2p.h"
+#include "utf8-utils.h"
 
 #include <cctype>
 #include <optional>
 #include <utility>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 namespace {
 
@@ -85,4 +85,4 @@ std::filesystem::path resolve_japanese_onnx_model_dir(const std::filesystem::pat
   return base / "ja" / "roberta_japanese_char_luw_upos_onnx";
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

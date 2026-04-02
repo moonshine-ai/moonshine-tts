@@ -1,9 +1,9 @@
-#ifndef MOONSHINE_G2P_MOONSHINE_G2P_H
-#define MOONSHINE_G2P_MOONSHINE_G2P_H
+#ifndef MOONSHINE_TTS_G2P_H
+#define MOONSHINE_TTS_G2P_H
 
-#include "moonshine-g2p/g2p-word-log.h"
-#include "moonshine-g2p/moonshine-g2p-options.h"
-#include "moonshine-g2p/rule-based-g2p-factory.h"
+#include "g2p-word-log.h"
+#include "moonshine-g2p-options.h"
+#include "rule-based-g2p-factory.h"
 
 #include <memory>
 #include <optional>
@@ -11,7 +11,7 @@
 #include <string_view>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 class RuleBasedG2p;
 
@@ -73,6 +73,6 @@ class MoonshineG2P {
   std::optional<RuleBasedG2pKind> rule_backend_;
 };
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_MOONSHINE_G2P_H
+#endif  // MOONSHINE_TTS_G2P_H

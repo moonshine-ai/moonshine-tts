@@ -1,8 +1,8 @@
-#include "moonshine-g2p/lang-specific/chinese.h"
+#include "chinese.h"
 
-#include "moonshine-g2p/g2p-word-log.h"
-#include "moonshine-g2p/lang-specific/chinese-numbers.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "g2p-word-log.h"
+#include "chinese-numbers.h"
+#include "utf8-utils.h"
 
 #include <cctype>
 #include <cstdint>
@@ -14,7 +14,7 @@
 #include <unordered_set>
 #include <utility>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
 std::string trim_copy_line(std::string_view s) {
@@ -546,4 +546,4 @@ std::filesystem::path resolve_chinese_onnx_model_dir(const std::filesystem::path
   return model_root / "zh_hans" / "roberta_chinese_base_upos_onnx";
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

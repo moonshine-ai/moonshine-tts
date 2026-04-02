@@ -1,7 +1,7 @@
-#ifndef MOONSHINE_G2P_LANG_SPECIFIC_ENGLISH_H
-#define MOONSHINE_G2P_LANG_SPECIFIC_ENGLISH_H
+#ifndef MOONSHINE_TTS_LANG_SPECIFIC_ENGLISH_H
+#define MOONSHINE_TTS_LANG_SPECIFIC_ENGLISH_H
 
-#include "moonshine-g2p/rule-based-g2p.h"
+#include "rule-based-g2p.h"
 
 #include <filesystem>
 #include <memory>
@@ -9,7 +9,7 @@
 #include <string_view>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 struct G2pWordLog;
 
@@ -46,6 +46,6 @@ bool dialect_resolves_to_english_rules(std::string_view dialect_id);
 /// Default: ``<model-root>/en_us/dict_filtered_heteronyms.tsv``.
 std::filesystem::path resolve_english_dict_path(const std::filesystem::path& model_root);
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_LANG_SPECIFIC_ENGLISH_H
+#endif  // MOONSHINE_TTS_LANG_SPECIFIC_ENGLISH_H

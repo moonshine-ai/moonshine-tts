@@ -1,10 +1,10 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "moonshine-g2p/lang-specific/chinese.h"
-#ifdef MOONSHINE_G2P_WITH_MOONSHINE_G2P_CLASS
-#include "moonshine-g2p/chinese-onnx-g2p.h"
-#include "moonshine-g2p/moonshine-g2p.h"
+#include "chinese.h"
+#ifdef MOONSHINE_TTS_WITH_G2P_CLASS
+#include "chinese-onnx-g2p.h"
+#include "moonshine-g2p.h"
 #endif
 
 #include <chrono>
@@ -26,7 +26,7 @@ std::filesystem::path make_temp_tsv(const char* contents) {
 }  // namespace
 
 TEST_CASE("chinese: dialect_resolves_to_chinese_rules") {
-  using moonshine_g2p::dialect_resolves_to_chinese_rules;
+  using moonshine_tts::dialect_resolves_to_chinese_rules;
   CHECK(dialect_resolves_to_chinese_rules("zh"));
   CHECK(dialect_resolves_to_chinese_rules("zh-Hans"));
   CHECK(dialect_resolves_to_chinese_rules("ZH_cn"));
@@ -41,31 +41,31 @@ TEST_CASE("chinese: lexicon lookup and Arabic numeral expansion via per-char Han
       "\xe5\x8d\x81\tsh2_ipa\n"
       "\xe4\xba\x8c\ter2_ipa\n"
       "\xe6\xb5\x8b\xe8\xaf\x95\toneword_ipa\n");
-  moonshine_g2p::ChineseRuleG2p g(p);
+  moonshine_tts::ChineseRuleG2p g(p);
   CHECK(g.word_to_ipa("\xe6\xb5\x8b\xe8\xaf\x95") == "oneword_ipa");
   CHECK(g.word_to_ipa("42") == "s4_ipa sh2_ipa er2_ipa");
   std::filesystem::remove(p);
 }
 
-#ifdef MOONSHINE_G2P_WITH_MOONSHINE_G2P_CLASS
+#ifdef MOONSHINE_TTS_WITH_G2P_CLASS
 TEST_CASE("chinese: MoonshineG2P zh matches ChineseOnnxG2p when ONNX bundle exists") {
   const std::filesystem::path repo =
       std::filesystem::path(__FILE__).parent_path().parent_path().parent_path();
-  const auto onnx_dir = moonshine_g2p::default_chinese_tok_pos_model_dir(repo);
+  const auto onnx_dir = moonshine_tts::default_chinese_tok_pos_model_dir(repo);
   const auto p = make_temp_tsv("\xe6\xb5\x8b\xe8\xaf\x95\tzh_test_ipa\n");
   if (!std::filesystem::is_regular_file(onnx_dir / "model.onnx")) {
     std::filesystem::remove(p);
     return;
   }
-  moonshine_g2p::MoonshineG2POptions opt;
+  moonshine_tts::MoonshineG2POptions opt;
   opt.model_root = repo / "models";
   opt.chinese_dict_path = p;
   opt.chinese_onnx_model_dir = onnx_dir;
-  moonshine_g2p::MoonshineG2P g("zh", opt);
+  moonshine_tts::MoonshineG2P g("zh", opt);
   CHECK(g.uses_chinese_rules());
   CHECK_FALSE(g.uses_onnx());
   CHECK(g.dialect_id() == "zh-Hans");
-  moonshine_g2p::ChineseOnnxG2p direct(onnx_dir, p, false);
+  moonshine_tts::ChineseOnnxG2p direct(onnx_dir, p, false);
   const std::string w = "\xe6\xb5\x8b\xe8\xaf\x95";
   CHECK(g.text_to_ipa(w) == direct.text_to_ipa(w));
   std::filesystem::remove(p);

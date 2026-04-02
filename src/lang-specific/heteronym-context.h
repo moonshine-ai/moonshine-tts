@@ -1,12 +1,12 @@
-#ifndef MOONSHINE_G2P_HETERONYM_CONTEXT_H
-#define MOONSHINE_G2P_HETERONYM_CONTEXT_H
+#ifndef MOONSHINE_TTS_HETERONYM_CONTEXT_H
+#define MOONSHINE_TTS_HETERONYM_CONTEXT_H
 
 #include <optional>
 #include <string>
 #include <tuple>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 // Python heteronym_centered_context_window on Unicode code points.
 // *full_cells*: UTF-8 text split into one string per code point.
@@ -18,6 +18,6 @@ std::optional<std::tuple<std::string, int, int>> heteronym_centered_context_wind
     int span_e,
     int max_chars = 32);
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_HETERONYM_CONTEXT_H
+#endif  // MOONSHINE_TTS_HETERONYM_CONTEXT_H

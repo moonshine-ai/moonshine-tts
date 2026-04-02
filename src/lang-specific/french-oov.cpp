@@ -1,19 +1,19 @@
-#include "moonshine-g2p/lang-specific/french-internal.h"
+#include "french-internal.h"
 
-#include "moonshine-g2p/ipa-symbols.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "ipa-symbols.h"
+#include "utf8-utils.h"
 
 #include <cctype>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-namespace moonshine_g2p::french_detail {
+namespace moonshine_tts::french_detail {
 namespace {
 
-const std::string& kPrimaryStressUtf8 = moonshine_g2p::ipa::kPrimaryStressUtf8;
+const std::string& kPrimaryStressUtf8 = moonshine_tts::ipa::kPrimaryStressUtf8;
 
-using moonshine_g2p::utf8_decode_at;
+using moonshine_tts::utf8_decode_at;
 
 char32_t french_tolower_cp(char32_t c) {
   switch (c) {
@@ -735,4 +735,4 @@ std::string oov_word_to_ipa(const std::string& word, bool with_stress) {
   return ipa;
 }
 
-}  // namespace moonshine_g2p::french_detail
+}  // namespace moonshine_tts::french_detail

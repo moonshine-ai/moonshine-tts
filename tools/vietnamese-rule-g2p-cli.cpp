@@ -1,5 +1,5 @@
 // Vietnamese rule + lexicon G2P. Mirrors ``vietnamese_rule_g2p.py`` CLI subset.
-#include "moonshine-g2p/lang-specific/vietnamese.h"
+#include "vietnamese.h"
 
 #include <filesystem>
 #include <iostream>
@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
   }
 
   try {
-    moonshine_g2p::VietnameseRuleG2p g2p(dict_path);
+    moonshine_tts::VietnameseRuleG2p g2p(dict_path);
     std::cout << g2p.text_to_ipa(std::move(text)) << '\n';
   } catch (const std::exception& e) {
     std::cerr << "error: " << e.what() << '\n';

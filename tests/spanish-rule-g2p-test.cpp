@@ -1,7 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "moonshine-g2p/lang-specific/spanish.h"
+#include "spanish.h"
 #include "rule-g2p-test-support.h"
 
 #include <algorithm>
@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace r = moonshine_g2p::rule_g2p_test;
+namespace r = moonshine_tts::rule_g2p_test;
 
 namespace {
 
@@ -29,7 +29,7 @@ bool python_spanish_import_ok() {
 }
 
 void check_wiki_parity(const std::filesystem::path& wiki, const char* dialect_cli,
-                       const moonshine_g2p::SpanishDialect& dialect) {
+                       const moonshine_tts::SpanishDialect& dialect) {
   constexpr std::size_t kWikiParityLines = 100;
   if (!std::filesystem::is_regular_file(wiki) || !python_spanish_import_ok()) {
     return;
@@ -40,7 +40,7 @@ void check_wiki_parity(const std::filesystem::path& wiki, const char* dialect_cl
   REQUIRE(py.size() == src.size());
   for (size_t i = 0; i < src.size(); ++i) {
     INFO("wiki line " << (i + 1));
-    CHECK(moonshine_g2p::spanish_text_to_ipa(src[i], dialect) == py[i]);
+    CHECK(moonshine_tts::spanish_text_to_ipa(src[i], dialect) == py[i]);
   }
 }
 
@@ -63,24 +63,24 @@ TEST_CASE("spanish: En 1891 matches Python when python3 exists") {
   std::error_code ec;
   std::filesystem::remove(tmp, ec);
   REQUIRE(py.size() == 1);
-  const auto dialect = moonshine_g2p::spanish_dialect_from_cli_id("es-MX");
-  CHECK(moonshine_g2p::spanish_text_to_ipa("En 1891", dialect) == py[0]);
+  const auto dialect = moonshine_tts::spanish_dialect_from_cli_id("es-MX");
+  CHECK(moonshine_tts::spanish_text_to_ipa("En 1891", dialect) == py[0]);
 }
 
 TEST_CASE("spanish: dialect ids include es-MX and es-ES") {
-  const auto ids = moonshine_g2p::spanish_dialect_cli_ids();
+  const auto ids = moonshine_tts::spanish_dialect_cli_ids();
   CHECK(std::find(ids.begin(), ids.end(), "es-MX") != ids.end());
   CHECK(std::find(ids.begin(), ids.end(), "es-ES") != ids.end());
 }
 
 TEST_CASE("spanish: wiki-text first 100 lines es_mx match Python when data and python3 exist") {
   const std::filesystem::path wiki = r::repo_root_from_tests_cpp(__FILE__) / "data" / "es_mx" / "wiki-text.txt";
-  const auto dialect = moonshine_g2p::spanish_dialect_from_cli_id("es-MX");
+  const auto dialect = moonshine_tts::spanish_dialect_from_cli_id("es-MX");
   check_wiki_parity(wiki, nullptr, dialect);
 }
 
 TEST_CASE("spanish: wiki-text first 100 lines es_es match Python when data and python3 exist") {
   const std::filesystem::path wiki = r::repo_root_from_tests_cpp(__FILE__) / "data" / "es_es" / "wiki-text.txt";
-  const auto dialect = moonshine_g2p::spanish_dialect_from_cli_id("es-ES");
+  const auto dialect = moonshine_tts::spanish_dialect_from_cli_id("es-ES");
   check_wiki_parity(wiki, "es-ES", dialect);
 }

@@ -1,11 +1,11 @@
-#include "moonshine-g2p/lang-specific/spanish-unicode.h"
-#include "moonshine-g2p/lang-specific/spanish-unicode-tables.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "spanish-unicode.h"
+#include "spanish-unicode-tables.h"
+#include "utf8-utils.h"
 
 #include <algorithm>
 #include <string>
 
-namespace moonshine_g2p::spanish_unicode {
+namespace moonshine_tts::spanish_unicode {
 namespace {
 
 const char* lookup_sorted_pair(const std::pair<char32_t, const char*>* table, size_t n, char32_t key) {
@@ -99,4 +99,4 @@ const char* strip_replacement_utf8(char32_t cp) {
   return lookup_sorted_pair(k_unicode_strip_table, k_unicode_strip_table_size, cp);
 }
 
-}  // namespace moonshine_g2p::spanish_unicode
+}  // namespace moonshine_tts::spanish_unicode

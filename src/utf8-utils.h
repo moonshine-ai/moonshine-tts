@@ -1,5 +1,5 @@
-#ifndef MOONSHINE_G2P_UTF8_UTILS_H
-#define MOONSHINE_G2P_UTF8_UTILS_H
+#ifndef MOONSHINE_TTS_UTF8_UTILS_H
+#define MOONSHINE_TTS_UTF8_UTILS_H
 
 #include <cctype>
 #include <cstdint>
@@ -9,7 +9,7 @@
 #include <utility>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 void utf8_append_codepoint(std::string& out, char32_t cp);
 
@@ -73,6 +73,6 @@ std::string normalize_rule_based_dialect_cli_key(std::string_view raw);
 /// both ``pt-PT`` and ``pt_PT`` when they normalize to the same key).
 std::vector<std::string> dedupe_dialect_ids_preserve_first(std::vector<std::string> ids);
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_UTF8_UTILS_H
+#endif  // MOONSHINE_TTS_UTF8_UTILS_H

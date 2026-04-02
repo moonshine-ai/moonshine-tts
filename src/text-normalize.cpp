@@ -1,9 +1,9 @@
-#include "moonshine-g2p/text-normalize.h"
+#include "text-normalize.h"
 
-#include "moonshine-g2p/utf8-utils.h"
+#include "utf8-utils.h"
 
 #include <cctype>
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 namespace {
 
@@ -95,4 +95,4 @@ std::string normalize_grapheme_key(std::string_view word_token) {
   return s;
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

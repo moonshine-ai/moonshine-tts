@@ -1,9 +1,9 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "moonshine-g2p/utf8-utils.h"
+#include "utf8-utils.h"
 
-using namespace moonshine_g2p;
+using namespace moonshine_tts;
 
 TEST_CASE("utf8_split_codepoints ascii") {
   const auto v = utf8_split_codepoints("abc");

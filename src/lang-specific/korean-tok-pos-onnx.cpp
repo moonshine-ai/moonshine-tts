@@ -1,5 +1,5 @@
-#include "moonshine-g2p/korean-tok-pos-onnx.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "korean-tok-pos-onnx.h"
+#include "utf8-utils.h"
 
 #include <nlohmann/json.hpp>
 
@@ -17,7 +17,7 @@ extern "C" {
 #include <utf8proc.h>
 }
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
 Ort::SessionOptions make_session_options(bool use_cuda) {
@@ -690,4 +690,4 @@ std::vector<std::pair<std::string, std::string>> KoreanTokPosOnnx::annotate(std:
   return pairs;
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

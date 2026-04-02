@@ -1,12 +1,12 @@
-#ifndef MOONSHINE_G2P_LANG_SPECIFIC_TURKISH_H
-#define MOONSHINE_G2P_LANG_SPECIFIC_TURKISH_H
+#ifndef MOONSHINE_TTS_LANG_SPECIFIC_TURKISH_H
+#define MOONSHINE_TTS_LANG_SPECIFIC_TURKISH_H
 
-#include "moonshine-g2p/rule-based-g2p.h"
+#include "rule-based-g2p.h"
 
 #include <string>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 struct G2pWordLog;
 
@@ -52,6 +52,6 @@ std::string turkish_text_to_ipa(const std::string& text, bool with_stress = true
                                 std::vector<G2pWordLog>* per_word_log = nullptr,
                                 bool expand_cardinal_digits = true);
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_LANG_SPECIFIC_TURKISH_H
+#endif  // MOONSHINE_TTS_LANG_SPECIFIC_TURKISH_H

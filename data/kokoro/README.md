@@ -128,13 +128,13 @@ Then copy `model.onnx` (and updated `onnx_export_meta.json` if present) into `da
 
    Expect: `ok (510, 256)` (rows/cols may match upstream; second dimension is style size).
 
-2. **End-to-end TTS (needs built `moonshine_tts`, ONNX, voices, and `data` G2P assets):**
+2. **End-to-end TTS (needs built `moonshine_tts` target → `moonshine-tts` binary, ONNX, voices, and `data` G2P assets):**
 
    ```bash
    cmake --build build --target moonshine_tts
-   build/moonshine_tts --lang en_us -o /tmp/kokoro_smoke.wav --text "Hello"
+   build/moonshine-tts --lang en_us -o /tmp/kokoro_smoke.wav --text "Hello"
    ```
 
    Expect: success message with non-zero sample count at 24000 Hz.
 
-These checks were executed successfully against this repository (export from `models/kokoro/voices/af_heart.pt`, header `KVO1` + shape `(510, 256)`, and `moonshine_tts` WAV output).
+These checks were executed successfully against this repository (export from `models/kokoro/voices/af_heart.pt`, header `KVO1` + shape `(510, 256)`, and `moonshine-tts` WAV output).

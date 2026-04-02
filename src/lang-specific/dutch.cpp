@@ -1,8 +1,8 @@
-#include "moonshine-g2p/lang-specific/dutch.h"
+#include "dutch.h"
 
-#include "moonshine-g2p/g2p-word-log.h"
-#include "moonshine-g2p/ipa-symbols.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "g2p-word-log.h"
+#include "ipa-symbols.h"
+#include "utf8-utils.h"
 
 #include <algorithm>
 #include <array>
@@ -17,14 +17,14 @@
 #include <utility>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
 using ipa::kPrimaryStressUtf8;
 using ipa::kSecondaryStressUtf8;
-using moonshine_g2p::erase_utf8_substr;
-using moonshine_g2p::trim_ascii_ws_copy;
-using moonshine_g2p::utf8_decode_at;
+using moonshine_tts::erase_utf8_substr;
+using moonshine_tts::trim_ascii_ws_copy;
+using moonshine_tts::utf8_decode_at;
 
 char32_t dutch_unicode_tolower_cp(char32_t c) {
   switch (c) {
@@ -1653,4 +1653,4 @@ std::string DutchRuleG2p::text_to_ipa(std::string text, std::vector<G2pWordLog>*
   return text_to_ipa_no_expand(text, per_word_log);
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

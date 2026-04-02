@@ -1,8 +1,8 @@
-#include "moonshine-g2p/g2p-word-log.h"
+#include "g2p-word-log.h"
 
 #include <sstream>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 const char* g2p_word_path_tag(G2pWordPath path) {
   switch (path) {
@@ -52,4 +52,4 @@ std::string format_g2p_word_log_line(const G2pWordLog& e) {
   return o.str();
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

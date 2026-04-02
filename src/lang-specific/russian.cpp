@@ -1,9 +1,9 @@
-#include "moonshine-g2p/lang-specific/russian.h"
+#include "russian.h"
 
-#include "moonshine-g2p/g2p-word-log.h"
-#include "moonshine-g2p/ipa-symbols.h"
-#include "moonshine-g2p/lang-specific/german.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "g2p-word-log.h"
+#include "ipa-symbols.h"
+#include "german.h"
+#include "utf8-utils.h"
 
 #include <cctype>
 #include <algorithm>
@@ -20,16 +20,16 @@
 #include <utility>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
 const std::string& kPri = ipa::kPrimaryStressUtf8;
 const std::string& kSec = ipa::kSecondaryStressUtf8;
 const std::string kPalatal{"\xCA\xB2"};  // ʲ
 
-using moonshine_g2p::erase_utf8_substr;
-using moonshine_g2p::trim_ascii_ws_copy;
-using moonshine_g2p::utf8_decode_at;
+using moonshine_tts::erase_utf8_substr;
+using moonshine_tts::trim_ascii_ws_copy;
+using moonshine_tts::utf8_decode_at;
 
 bool is_unicode_mn(char32_t cp) {
   if (cp >= 0x300 && cp <= 0x36F) {
@@ -1122,4 +1122,4 @@ std::filesystem::path resolve_russian_dict_path(const std::filesystem::path& mod
   return model_root / "ru" / "dict.tsv";
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

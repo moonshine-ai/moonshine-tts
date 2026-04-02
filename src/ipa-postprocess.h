@@ -1,5 +1,5 @@
-#ifndef MOONSHINE_G2P_IPA_POSTPROCESS_H
-#define MOONSHINE_G2P_IPA_POSTPROCESS_H
+#ifndef MOONSHINE_TTS_IPA_POSTPROCESS_H
+#define MOONSHINE_TTS_IPA_POSTPROCESS_H
 
 #include <optional>
 #include <string>
@@ -7,7 +7,7 @@
 #include <unordered_set>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 /// NFC (Unicode canonical composition) via utf8proc; frees the same way as other call sites.
 std::string utf8_nfc_copy(std::string_view ipa_utf8);
@@ -48,6 +48,6 @@ std::string pick_closest_cmudict_ipa(const std::vector<std::string>& predicted_p
 std::optional<std::string> match_prediction_to_cmudict_ipa(const std::string& predicted,
                                                              const std::vector<std::string>& alts);
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_IPA_POSTPROCESS_H
+#endif  // MOONSHINE_TTS_IPA_POSTPROCESS_H

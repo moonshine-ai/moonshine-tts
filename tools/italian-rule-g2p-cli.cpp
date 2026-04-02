@@ -1,5 +1,5 @@
 // Stand-alone Italian rule + lexicon G2P (no ONNX). Mirrors ``italian_rule_g2p.py`` CLI subset.
-#include "moonshine-g2p/lang-specific/italian.h"
+#include "italian.h"
 
 #include <filesystem>
 #include <iostream>
@@ -26,7 +26,7 @@ std::string read_all_stdin() {
 
 int main(int argc, char** argv) {
   std::filesystem::path dict_path = std::filesystem::path("data") / "it" / "dict.tsv";
-  moonshine_g2p::ItalianRuleG2p::Options opt;
+  moonshine_tts::ItalianRuleG2p::Options opt;
   bool force_stdin = false;
   std::vector<std::string> parts;
 
@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
   }
 
   try {
-    moonshine_g2p::ItalianRuleG2p g2p(dict_path, opt);
+    moonshine_tts::ItalianRuleG2p g2p(dict_path, opt);
     std::cout << g2p.text_to_ipa(text) << '\n';
   } catch (const std::exception& e) {
     std::cerr << "error: " << e.what() << '\n';

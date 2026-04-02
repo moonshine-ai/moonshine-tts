@@ -1,5 +1,5 @@
-#ifndef MOONSHINE_G2P_KOREAN_TOK_POS_ONNX_H
-#define MOONSHINE_G2P_KOREAN_TOK_POS_ONNX_H
+#ifndef MOONSHINE_TTS_KOREAN_TOK_POS_ONNX_H
+#define MOONSHINE_TTS_KOREAN_TOK_POS_ONNX_H
 
 #include <onnxruntime_cxx_api.h>
 
@@ -10,7 +10,7 @@
 #include <utility>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 /// Korean whitespace-level words + UD UPOS via ONNX (``KoichiYasuoka/roberta-base-korean-morph-upos``),
 /// mirroring ``korean_tok_pos.KoreanTokPosOnnx`` / ``encode_for_morph_upos`` + WordPiece from
@@ -41,6 +41,6 @@ class KoreanTokPosOnnx {
 /// ``<repo>/data/ko/roberta_korean_morph_upos_onnx`` when *repo_root* is the repository root.
 std::filesystem::path default_korean_tok_pos_model_dir(const std::filesystem::path& repo_root);
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_KOREAN_TOK_POS_ONNX_H
+#endif  // MOONSHINE_TTS_KOREAN_TOK_POS_ONNX_H

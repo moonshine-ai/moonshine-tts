@@ -1,7 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
-#include "moonshine-g2p/lang-specific/turkish.h"
+#include "turkish.h"
 #include "rule-g2p-test-support.h"
 
 #include <algorithm>
@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 
-namespace r = moonshine_g2p::rule_g2p_test;
+namespace r = moonshine_tts::rule_g2p_test;
 
 namespace {
 
@@ -31,7 +31,7 @@ void check_wiki_parity(const std::filesystem::path& wiki) {
   REQUIRE(py.size() == src.size());
   for (size_t i = 0; i < src.size(); ++i) {
     INFO("wiki line " << (i + 1));
-    CHECK(moonshine_g2p::turkish_text_to_ipa(src[i]) == py[i]);
+    CHECK(moonshine_tts::turkish_text_to_ipa(src[i]) == py[i]);
   }
 }
 
@@ -54,11 +54,11 @@ TEST_CASE("turkish: dağ and değer match Python when python3 exists") {
   std::error_code ec;
   std::filesystem::remove(tmp, ec);
   REQUIRE(py.size() == 1);
-  CHECK(moonshine_g2p::turkish_text_to_ipa("dağ değer") == py[0]);
+  CHECK(moonshine_tts::turkish_text_to_ipa("dağ değer") == py[0]);
 }
 
 TEST_CASE("turkish: dialect ids include tr and tr-TR") {
-  const auto ids = moonshine_g2p::TurkishRuleG2p::dialect_ids();
+  const auto ids = moonshine_tts::TurkishRuleG2p::dialect_ids();
   CHECK(std::find(ids.begin(), ids.end(), "tr") != ids.end());
   CHECK(std::find(ids.begin(), ids.end(), "tr-TR") != ids.end());
 }

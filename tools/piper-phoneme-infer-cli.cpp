@@ -1,6 +1,6 @@
 // Dev / CI: Piper ONNX from a JSON list of int64 phoneme ids (parity with ``speak.py`` ORT path).
-#include "moonshine-g2p/moonshine-tts.h"
-#include "moonshine-g2p/piper-tts.h"
+#include "moonshine-tts.h"
+#include "piper-tts.h"
 
 #include <nlohmann/json.hpp>
 
@@ -26,9 +26,9 @@ void usage(const char* argv0) {
 }  // namespace
 
 int main(int argc, char** argv) {
-  using moonshine_g2p::PiperTTS;
-  using moonshine_g2p::PiperTTSOptions;
-  using moonshine_g2p::write_wav_mono_pcm16;
+  using moonshine_tts::PiperTTS;
+  using moonshine_tts::PiperTTSOptions;
+  using moonshine_tts::write_wav_mono_pcm16;
 
   std::filesystem::path onnx_path;
   std::filesystem::path ids_json;

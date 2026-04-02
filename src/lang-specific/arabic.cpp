@@ -1,13 +1,13 @@
-#include "moonshine-g2p/lang-specific/arabic.h"
-#include "moonshine-g2p/lang-specific/arabic-ipa.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "arabic.h"
+#include "arabic-ipa.h"
+#include "utf8-utils.h"
 
 #include <cctype>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 namespace {
 
@@ -180,4 +180,4 @@ std::string ArabicRuleG2p::text_to_ipa(std::string text, std::vector<G2pWordLog>
   return out;
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

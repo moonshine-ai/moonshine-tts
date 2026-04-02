@@ -1,5 +1,5 @@
-#include "moonshine-g2p/lang-specific/korean-numbers.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "korean-numbers.h"
+#include "utf8-utils.h"
 
 #include <cctype>
 #include <cstring>
@@ -9,7 +9,7 @@
 #include <string_view>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
 constexpr std::uint64_t kMaxCardinal = 10000000000000000ULL;  // 10^16
@@ -283,4 +283,4 @@ bool is_ascii_numeral_token(std::string_view token) {
   return korean_reading_fragments_from_ascii_numeral_token(token).has_value();
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

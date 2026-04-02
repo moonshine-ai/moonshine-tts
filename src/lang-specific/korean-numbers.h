@@ -1,12 +1,12 @@
-#ifndef MOONSHINE_G2P_LANG_SPECIFIC_KOREAN_NUMBERS_H
-#define MOONSHINE_G2P_LANG_SPECIFIC_KOREAN_NUMBERS_H
+#ifndef MOONSHINE_TTS_LANG_SPECIFIC_KOREAN_NUMBERS_H
+#define MOONSHINE_TTS_LANG_SPECIFIC_KOREAN_NUMBERS_H
 
 #include <cstdint>
 #include <optional>
 #include <string>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 /// Non-negative integer → Sino-Korean cardinal Hangul (``영`` … ``경`` …), mirroring
 /// ``korean_numbers.int_to_sino_korean_hangul``.
@@ -19,6 +19,6 @@ std::optional<std::vector<std::string>> korean_reading_fragments_from_ascii_nume
 
 bool is_ascii_numeral_token(std::string_view token);
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
-#endif  // MOONSHINE_G2P_LANG_SPECIFIC_KOREAN_NUMBERS_H
+#endif  // MOONSHINE_TTS_LANG_SPECIFIC_KOREAN_NUMBERS_H

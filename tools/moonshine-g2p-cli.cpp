@@ -1,7 +1,8 @@
 // Unified G2P CLI: rule-based dialects (English, Spanish, German, …).
-#include "moonshine-g2p/g2p-word-log.h"
-#include "moonshine-g2p/lang-specific/spanish.h"
-#include "moonshine-g2p/moonshine-g2p.h"
+#include "builtin-cpp-data-root.h"
+#include "g2p-word-log.h"
+#include "spanish.h"
+#include "moonshine-g2p.h"
 
 #include <cstdlib>
 #include <cstring>
@@ -10,20 +11,21 @@
 #include <string>
 #include <vector>
 
-using moonshine_g2p::MoonshineG2P;
-using moonshine_g2p::MoonshineG2POptions;
-using moonshine_g2p::RuleBasedG2pKind;
-using moonshine_g2p::dialect_uses_rule_based_g2p;
-using moonshine_g2p::format_g2p_word_log_line;
-using moonshine_g2p::rule_based_g2p_dialect_catalog;
-using moonshine_g2p::spanish_dialect_cli_ids;
+using moonshine_tts::MoonshineG2P;
+using moonshine_tts::MoonshineG2POptions;
+using moonshine_tts::RuleBasedG2pKind;
+using moonshine_tts::dialect_uses_rule_based_g2p;
+using moonshine_tts::format_g2p_word_log_line;
+using moonshine_tts::rule_based_g2p_dialect_catalog;
+using moonshine_tts::spanish_dialect_cli_ids;
 
 namespace {
 
 void usage(const char *argv0) {
   std::cerr
       << "Usage: " << argv0
-      << " [--language ID] [--model-root DIR]\n"
+      << " [--language|--lang ID] [--model-root DIR]\n"
+      << "       (default model root: builtin_cpp_data_root() / bundled data/; same as MoonshineTTS/PiperTTS)\n"
       << "       [--dict PATH] [--heteronym-onnx PATH] [--oov-onnx PATH]\n"
       << "       [--cuda] [--log-words|-v] [--debug-heteronym]\n"
       << "       [--no-stress] [--broad-phonemes] [--stdin]\n"
@@ -121,7 +123,7 @@ const char *rule_based_kind_label(RuleBasedG2pKind k) {
 }
 
 void print_rule_based_dialect_catalog(std::ostream &os) {
-  os << "\nSupported languages and dialect ids (pass with --language):\n\n";
+  os << "\nSupported languages and dialect ids (pass with --language or --lang):\n\n";
   for (const auto &entry : rule_based_g2p_dialect_catalog()) {
     os << "  " << rule_based_kind_label(entry.first) << '\n';
     for (const std::string &id : entry.second) {
@@ -135,6 +137,7 @@ void print_rule_based_dialect_catalog(std::ostream &os) {
 int main(int argc, char **argv) {
   std::string dialect_str = "en_us";
   MoonshineG2POptions opt;
+  bool model_root_from_cli = false;
   bool log_words = false;
   bool force_stdin = false;
   bool print_spanish_dialects = false;
@@ -159,14 +162,15 @@ int main(int argc, char **argv) {
     } else if (a == "--log-words" || a == "-v") {
       log_words = true;
     } else if (a == "--debug-heteronym") {
-      if (setenv("MOONSHINE_G2P_DEBUG_HET", "1", 1) != 0) {
-        std::cerr << "error: setenv MOONSHINE_G2P_DEBUG_HET failed\n";
+      if (setenv("MOONSHINE_TTS_DEBUG_HET", "1", 1) != 0) {
+        std::cerr << "error: setenv MOONSHINE_TTS_DEBUG_HET failed\n";
         return 1;
       }
-    } else if (a == "--language" && i + 1 < argc) {
+    } else if ((a == "--language" || a == "--lang") && i + 1 < argc) {
       dialect_str = argv[++i];
     } else if (a == "--model-root" && i + 1 < argc) {
       opt.model_root = argv[++i];
+      model_root_from_cli = true;
     } else if (a == "--german-dict" && i + 1 < argc) {
       opt.german_dict_path = argv[++i];
     } else if (a == "--chinese-dict" && i + 1 < argc) {
@@ -243,6 +247,10 @@ int main(int argc, char **argv) {
     }
   }
 
+  if (!model_root_from_cli) {
+    opt.model_root = moonshine_tts::builtin_cpp_data_root();
+  }
+
   if (print_spanish_dialects) {
     for (const std::string &id : spanish_dialect_cli_ids()) {
       std::cout << id << '\n';
@@ -268,7 +276,7 @@ int main(int argc, char **argv) {
 
   try {
     MoonshineG2P g2p(dialect_str, opt);
-    std::vector<moonshine_g2p::G2pWordLog> word_log;
+    std::vector<moonshine_tts::G2pWordLog> word_log;
     std::cout << g2p.text_to_ipa(phrase, log_words ? &word_log : nullptr) << '\n';
     if (log_words) {
       for (const auto &e : word_log) {

@@ -1,6 +1,6 @@
 # C++ runtime data (per-language bundles)
 
-This tree mirrors assets the C++ `moonshine_g2p` stack expects under a single **`--model-root`** (see each `README.md` for paths). When this project is embedded as the `moonshine-tts` submodule, canonical Python assets usually live under the **parent** repo’s `data/` and `models/`; this directory is the curated copy shipped for self-contained C++ builds.
+This tree mirrors assets the C++ `moonshine-tts` (speak) and `moonshine-tts-g2p` (G2P-only) CLIs expect under a single **`--model-root`** (see each `README.md` for paths). When this project is embedded as the `moonshine-tts` submodule, canonical Python assets usually live under the **parent** repo’s `data/` and `models/`; this directory is the curated copy shipped for self-contained C++ builds.
 
 | Folder | Role |
 |--------|------|
@@ -12,7 +12,7 @@ This tree mirrors assets the C++ `moonshine_g2p` stack expects under a single **
 | [it](it/README.md) | Italian IPA lexicon |
 | [ja](ja/README.md) | Japanese lexicon + char-LUW UPOS ONNX |
 | [ko](ko/README.md) | Korean IPA lexicon |
-| [kokoro](kokoro/README.md) | Kokoro-82M ONNX TTS + `.kokorovoice` bundles (`moonshine_tts`) |
+| [kokoro](kokoro/README.md) | Kokoro-82M ONNX TTS + `.kokorovoice` bundles (`moonshine-tts` speak CLI) |
 | [nl](nl/README.md) | Dutch IPA lexicon |
 | [pt_br](pt_br/README.md) | Brazilian Portuguese IPA lexicon |
 | [pt_pt](pt_pt/README.md) | European Portuguese IPA lexicon |

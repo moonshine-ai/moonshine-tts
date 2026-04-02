@@ -1,5 +1,5 @@
-#ifndef MOONSHINE_G2P_ARABIC_DIAC_ONNX_H
-#define MOONSHINE_G2P_ARABIC_DIAC_ONNX_H
+#ifndef MOONSHINE_TTS_ARABIC_DIAC_ONNX_H
+#define MOONSHINE_TTS_ARABIC_DIAC_ONNX_H
 
 #include <onnxruntime_cxx_api.h>
 
@@ -11,7 +11,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 /// BERT token-classification tashkīl (Arabert-style), mirroring :class:`arabic_diac_onnx_infer.ArabicDiacOnnx`.
 class ArabicDiacOnnx {
@@ -42,6 +42,6 @@ class ArabicDiacOnnx {
   std::unordered_map<std::string, std::string> label_to_diac_;
 };
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
 #endif

@@ -1,5 +1,5 @@
-#include "moonshine-g2p/lang-specific/hindi-numbers.h"
-#include "moonshine-g2p/utf8-utils.h"
+#include "hindi-numbers.h"
+#include "utf8-utils.h"
 
 #include <cctype>
 #include <cstdlib>
@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 namespace {
 
 constexpr const char* kDigitWord[10] = {
@@ -216,4 +216,4 @@ std::string expand_devanagari_digit_runs_in_text(std::string text) {
   return result;
 }
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts

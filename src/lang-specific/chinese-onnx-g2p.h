@@ -1,16 +1,16 @@
-#ifndef MOONSHINE_G2P_CHINESE_ONNX_G2P_H
-#define MOONSHINE_G2P_CHINESE_ONNX_G2P_H
+#ifndef MOONSHINE_TTS_CHINESE_ONNX_G2P_H
+#define MOONSHINE_TTS_CHINESE_ONNX_G2P_H
 
-#include "moonshine-g2p/chinese-tok-pos-onnx.h"
-#include "moonshine-g2p/lang-specific/chinese.h"
-#include "moonshine-g2p/rule-based-g2p.h"
+#include "chinese-tok-pos-onnx.h"
+#include "chinese.h"
+#include "rule-based-g2p.h"
 
 #include <filesystem>
 #include <memory>
 #include <string>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 struct G2pWordLog;
 
@@ -43,6 +43,6 @@ class ChineseOnnxRuleG2p : public RuleBasedG2p {
   std::unique_ptr<ChineseOnnxG2p> impl_;
 };
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
 #endif

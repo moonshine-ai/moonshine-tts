@@ -1,12 +1,12 @@
-#ifndef MOONSHINE_G2P_LANG_SPECIFIC_PORTUGUESE_RULES_H
-#define MOONSHINE_G2P_LANG_SPECIFIC_PORTUGUESE_RULES_H
+#ifndef MOONSHINE_TTS_LANG_SPECIFIC_PORTUGUESE_RULES_H
+#define MOONSHINE_TTS_LANG_SPECIFIC_PORTUGUESE_RULES_H
 
 #include <cstdint>
 #include <optional>
 #include <string>
 #include <unordered_map>
 
-namespace moonshine_g2p::portuguese_rules {
+namespace moonshine_tts::portuguese_rules {
 
 char32_t pt_tolower(char32_t c);
 std::string normalize_lookup_key_utf8(const std::string& word);
@@ -20,6 +20,6 @@ const std::unordered_map<std::string, std::string>& fw_pt();
 const std::unordered_map<std::string, std::string>& fw_br();
 const std::unordered_map<std::string, std::string>& sc_straddle();
 
-}  // namespace moonshine_g2p::portuguese_rules
+}  // namespace moonshine_tts::portuguese_rules
 
-#endif  // MOONSHINE_G2P_LANG_SPECIFIC_PORTUGUESE_RULES_H
+#endif  // MOONSHINE_TTS_LANG_SPECIFIC_PORTUGUESE_RULES_H

@@ -1,14 +1,14 @@
-#ifndef MOONSHINE_G2P_JAPANESE_ONNX_G2P_H
-#define MOONSHINE_G2P_JAPANESE_ONNX_G2P_H
+#ifndef MOONSHINE_TTS_JAPANESE_ONNX_G2P_H
+#define MOONSHINE_TTS_JAPANESE_ONNX_G2P_H
 
-#include "moonshine-g2p/japanese-tok-pos-onnx.h"
+#include "japanese-tok-pos-onnx.h"
 
 #include <filesystem>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-namespace moonshine_g2p {
+namespace moonshine_tts {
 
 /// ONNX LUW segmentation + ``data/ja/dict.tsv`` + kana IPA (mirrors ``japanese_onnx_g2p.py``).
 class JapaneseOnnxG2p {
@@ -30,6 +30,6 @@ class JapaneseOnnxG2p {
 
 std::filesystem::path default_japanese_dict_path(const std::filesystem::path& repo_root);
 
-}  // namespace moonshine_g2p
+}  // namespace moonshine_tts
 
 #endif
