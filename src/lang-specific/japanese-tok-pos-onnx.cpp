@@ -1,7 +1,7 @@
 #include "japanese-tok-pos-onnx.h"
 #include "utf8-utils.h"
 
-#include <nlohmann/json.hpp>
+#include <nlohmann/json.h>
 
 #include <cctype>
 #include <array>

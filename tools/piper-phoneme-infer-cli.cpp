@@ -2,7 +2,7 @@
 #include "moonshine-tts.h"
 #include "piper-tts.h"
 
-#include <nlohmann/json.hpp>
+#include <nlohmann/json.h>
 
 #include <cstdlib>
 #include <fstream>

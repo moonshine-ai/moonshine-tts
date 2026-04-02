@@ -12,7 +12,7 @@
 #include <cctype>
 #include <fstream>
 #include <unordered_map>
-#include <nlohmann/json.hpp>
+#include <nlohmann/json.h>
 #include <onnxruntime_cxx_api.h>
 #include <sstream>
 #include <stdexcept>
@@ -96,18 +96,6 @@ std::vector<std::string> merge_candidates(
     }
   }
   return out.empty() ? sorted_rest : out;
-}
-
-std::string trim_copy_sv(std::string_view s) {
-  size_t a = 0;
-  size_t b = s.size();
-  while (a < b && std::isspace(static_cast<unsigned char>(s[a])) != 0) {
-    ++a;
-  }
-  while (b > a && std::isspace(static_cast<unsigned char>(s[b - 1])) != 0) {
-    --b;
-  }
-  return std::string(s.substr(a, b - a));
 }
 
 }  // namespace

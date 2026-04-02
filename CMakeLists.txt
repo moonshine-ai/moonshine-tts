@@ -12,8 +12,8 @@
 #   cmake --build cpp/build && (cd cpp/build && ctest --output-on-failure)
 #
 # From this directory (submodule): ``cmake -S . -B build && cmake --build build && ctest --output-on-failure``.
-# Parity tests expect the parent monorepo layout (``../data``, ``../models``, Python G2P modules beside
-# ``moonshine-tts/``); ref scripts live under ``moonshine-tts/tests/*.py``.
+# Parity tests expect the parent monorepo layout (``../data``, ``../models``); golden lines live under
+# ``moonshine-tts/tests/data/``.
 #
 # Doctest layout follows https://github.com/moonshine-ai/moonshine/blob/main/core/moonshine-c-api-test.cpp
 cmake_minimum_required(VERSION 3.18)
@@ -24,37 +24,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 if(NOT WIN32)
-  add_compile_options(-Wall -Wextra -pedantic)
+  # ONNX Runtime headers use macros that trigger -Wpedantic; those includes are marked SYSTEM in
+  # cmake/moonshine-tts-onnxruntime.cmake so warnings there are not diagnosed.
+  add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif()
 
-include(FetchContent)
-FetchContent_Declare(
-  json
-  GIT_REPOSITORY https://github.com/nlohmann/json.git
-  GIT_TAG v3.11.3
-)
-FetchContent_MakeAvailable(json)
-
-FetchContent_Declare(
-  doctest
-  GIT_REPOSITORY https://github.com/doctest/doctest.git
-  GIT_TAG v2.4.11
-)
-FetchContent_MakeAvailable(doctest)
-
-FetchContent_Declare(
-  utf8proc
-  GIT_REPOSITORY https://github.com/JuliaStrings/utf8proc.git
-  GIT_TAG v2.9.0
-)
-FetchContent_GetProperties(utf8proc)
-if(NOT utf8proc_POPULATED)
-  FetchContent_Populate(utf8proc)
-  add_library(utf8proc STATIC ${utf8proc_SOURCE_DIR}/utf8proc.c)
-  set_source_files_properties(${utf8proc_SOURCE_DIR}/utf8proc.c PROPERTIES LANGUAGE C)
-  target_include_directories(utf8proc PUBLIC ${utf8proc_SOURCE_DIR})
-  target_compile_definitions(utf8proc PRIVATE UTF8PROC_EXPORTS PUBLIC UTF8PROC_STATIC)
-endif()
+# Vendored: third-party/doctest (v2.4.11), third-party/utf8proc (v2.9.0; utf8proc_data.c is #included by utf8proc.c).
+add_library(utf8proc STATIC ${CMAKE_CURRENT_SOURCE_DIR}/third-party/utf8proc/utf8proc.c)
+set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/third-party/utf8proc/utf8proc.c PROPERTIES LANGUAGE C)
+target_include_directories(utf8proc PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/third-party/utf8proc)
+target_compile_definitions(utf8proc PRIVATE UTF8PROC_EXPORTS PUBLIC UTF8PROC_STATIC)
 
 enable_testing()
 
@@ -96,11 +75,12 @@ add_library(moonshine_tts_core STATIC
 target_include_directories(moonshine_tts_core PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/src
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lang-specific
+  ${CMAKE_CURRENT_SOURCE_DIR}/third-party
 )
 target_include_directories(moonshine_tts_core PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
-target_link_libraries(moonshine_tts_core PUBLIC nlohmann_json::nlohmann_json utf8proc)
+target_link_libraries(moonshine_tts_core PUBLIC utf8proc)
 
 add_executable(piper_ipa_normalize_cli tools/piper-ipa-normalize-cli.cpp)
 target_link_libraries(piper_ipa_normalize_cli PRIVATE moonshine_tts_core)
@@ -132,7 +112,7 @@ target_link_libraries(dutch_g2p_batch PRIVATE moonshine_tts_core)
 add_executable(french_g2p_batch tools/french-g2p-batch-cli.cpp)
 target_link_libraries(french_g2p_batch PRIVATE moonshine_tts_core)
 
-set(DOCTEST_INC "${doctest_SOURCE_DIR}")
+set(DOCTEST_INC "${CMAKE_CURRENT_SOURCE_DIR}/third-party")
 
 function(moonshine_tts_add_test name)
   string(REPLACE "_" "-" name_dash "${name}")

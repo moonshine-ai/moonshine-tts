@@ -60,7 +60,8 @@ if(NOT EXISTS "${MOONSHINE_TTS_ORT_INCLUDE}/onnxruntime_cxx_api.h")
 endif()
 
 function(moonshine_tts_link_onnxruntime target_name)
-  target_include_directories(${target_name} PUBLIC "${MOONSHINE_TTS_ORT_INCLUDE}")
+  # SYSTEM → -isystem: suppress -Wall/-Wpedantic noise from Microsoft’s generated C API wrappers.
+  target_include_directories(${target_name} SYSTEM PUBLIC "${MOONSHINE_TTS_ORT_INCLUDE}")
   target_link_libraries(${target_name} PUBLIC "${MOONSHINE_TTS_ORT_LIB}")
   if(UNIX AND NOT APPLE)
     target_link_libraries(${target_name} PUBLIC pthread dl)

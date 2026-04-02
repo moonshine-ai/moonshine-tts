@@ -5,7 +5,7 @@
 
 #include <fstream>
 #include <iostream>
-#include <nlohmann/json.hpp>
+#include <nlohmann/json.h>
 #include <string>
 #include <string_view>
 #include <unordered_set>

@@ -3,7 +3,7 @@
 #include "constants.h"
 
 #include <fstream>
-#include <nlohmann/json.hpp>
+#include <nlohmann/json.h>
 #include <stdexcept>
 
 namespace moonshine_tts {

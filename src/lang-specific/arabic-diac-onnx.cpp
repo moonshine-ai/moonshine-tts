@@ -1,7 +1,7 @@
 #include "arabic-diac-onnx.h"
 #include "utf8-utils.h"
 
-#include <nlohmann/json.hpp>
+#include <nlohmann/json.h>
 
 #include <array>
 #include <cctype>

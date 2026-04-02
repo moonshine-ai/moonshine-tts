@@ -5,7 +5,7 @@
 
 #include <onnxruntime_cxx_api.h>
 
-#include <nlohmann/json.hpp>
+#include <nlohmann/json.h>
 
 extern "C" {
 #include <utf8proc.h>
